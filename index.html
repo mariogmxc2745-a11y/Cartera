@@ -110,6 +110,8 @@
   .colores{display:grid;grid-template-columns:1fr 1fr;gap:10px}
   .colores label{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--suave)}
   .colores input{width:40px;height:32px;padding:0;border:1px solid var(--borde);border-radius:2px;background:none;margin:0}
+  .repIn{margin-top:4px;padding:6px 8px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:20px}
+  .repIn.tocado{border-color:var(--texto)}
   .pos{color:var(--pos)} .neg{color:var(--neg)}
   .result{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:22px;margin:6px 0 0}
   .result small{font-family:'IBM Plex Sans',sans-serif;font-weight:400;font-size:12px;color:var(--suave);display:block;letter-spacing:0}
@@ -147,12 +149,36 @@
     .nav{display:flex;gap:8px;margin-bottom:22px}
     .nav .tabs{margin:0 !important;flex:1}
     .nav .tabs:first-child{flex:0 0 260px}
-    .dash{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:start;
-          grid-template-areas:"pat rent obj" "pos pos prox" "ratio peso evo" "met fon mes" "nota nota nota"}
+    .dash{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:16px;align-items:stretch;
+          grid-template-areas:"pat pat rent rent obj obj" "pos pos pos pos prox prox" "met met met fon fon fon" "mes mes mes mes mes mes" "nota nota nota nota nota nota"}
+    .dash>.panel,.dash>.sep{display:flex;flex-direction:column}
+    /* Patrimonio: donut y leyenda en paralelo */
+    .z-pat{display:grid !important;grid-template-columns:auto 1fr;column-gap:22px;align-content:start}
+    .z-pat>.etiq{grid-column:1 / -1}
+    .z-pat #donut{margin:0 !important;align-self:center}
+    #donut svg{max-width:152px;height:auto}
+    .z-pat .leyenda{grid-template-columns:1fr;gap:12px;align-self:center;margin:0}
+    .z-pat .leyenda .dato:last-child{grid-column:auto}
+    .z-pat .dato p:last-child{font-size:22px}
+    .z-pat .dato p:first-child{white-space:nowrap;letter-spacing:.08em}
+    /* Rentabilidad y objetivos repartidos en su tarjeta */
+    .z-rent #rentBloques{margin-top:auto !important}
+    .z-obj #dashObj{flex:1;display:flex;flex-direction:column;justify-content:space-between;padding-top:4px}
+    .z-obj .obj-fila{margin-bottom:0}
+    .z-prox #dashProx{flex:1;display:flex;flex-direction:column}
+    .z-prox #dashProx>div:first-of-type{margin-top:auto}
+    .z-met #notaRatio,.z-fon #notaBanda{margin-top:12px !important}
+    /* Reparto del mes: franja completa en dos columnas */
+    .z-mes{display:grid !important;grid-template-columns:minmax(0,1fr) minmax(0,1.5fr);column-gap:32px;align-items:start}
+    .z-mes>.etiq{grid-column:1 / -1}
+    .z-mes .mesDer{align-self:stretch;display:flex;flex-direction:column;justify-content:center;
+                   border-left:1px solid var(--borde);padding-left:32px;min-height:100%}
+    .z-mes #repCuerpo .grid{grid-template-columns:repeat(5,minmax(0,1fr))}
+    .z-mes #repCuerpo .dato p:last-child{font-size:20px}
     .dash.oculto{display:none}
     .dash>.panel,.dash>.sep,.dash>.nota{margin:0}
     .z-pat{grid-area:pat} .z-rent{grid-area:rent} .z-obj{grid-area:obj} .z-pos{grid-area:pos}
-    .z-prox{grid-area:prox} .z-ratio{grid-area:ratio} .z-peso{grid-area:peso} .z-evo{grid-area:evo}
+    .z-prox{grid-area:prox}
     .z-met{grid-area:met} .z-fon{grid-area:fon} .z-mes{grid-area:mes} .z-nota{grid-area:nota}
     .ancho{display:block}
     .z-mes{border:1px solid var(--borde);background:var(--panel);border-radius:2px;padding:16px}
@@ -224,7 +250,7 @@
         <div class="leyenda">
           <div class="dato" style="border-color:var(--oro)"><p>Metales · <span id="pMet">0</span>%</p><p id="vMet">—</p></div>
           <div class="dato" style="border-color:var(--rf)"><p>Renta fija · <span id="pRf">0</span>%</p><p id="vRf">—</p></div>
-          <div class="dato" style="border-color:var(--world)"><p>Renta variable · <span id="pFon">0</span>%</p><p id="vFon">—</p></div>
+          <div class="dato" style="border-color:var(--world)"><p>R. variable · <span id="pFon">0</span>%</p><p id="vFon">—</p></div>
         </div>
       </div>
 
@@ -266,6 +292,7 @@
 
       <div class="sep z-mes">
         <p class="etiq" style="margin-bottom:12px">Repartir la aportación del mes</p>
+        <div class="mesIzq">
         <label style="display:block;margin-bottom:20px">
           <span class="etiq">Cuánto aportas este mes</span>
           <span class="campoGrande"><span>€</span><input id="impTotal" class="grande" inputmode="decimal" placeholder="0"></span>
@@ -275,18 +302,22 @@
           <label><span class="etiq">Objetivo r. fija %</span><input id="objRF" inputmode="decimal" value="0"></label>
         </div>
         <p class="nota" id="objResto" style="margin:-8px 0 18px"></p>
+        </div>
+        <div class="mesDer">
         <div id="repVacio" style="font-size:13px;color:var(--suave)">Escribe cuánto vas a aportar y te digo cuánto va a cada uno de los cuatro.</div>
         <div id="repCuerpo" class="oculto">
           <div class="barra"><div id="rbMet" style="background:var(--oro)"></div><div id="rbRf" style="background:var(--rf)"></div><div id="rbFon" style="background:var(--world)"></div></div>
           <div class="grid" style="margin-bottom:16px">
-            <div class="dato" style="border-color:var(--oro)"><p>Oro</p><p id="rOro">—</p></div>
-            <div class="dato" style="border-color:var(--plata)"><p>Plata</p><p id="rPlata">—</p></div>
-            <div class="dato" style="border-color:var(--world)"><p data-nom="w"></p><p id="rWorld">—</p></div>
-            <div class="dato" style="border-color:var(--em)"><p data-nom="e"></p><p id="rEm">—</p></div>
-            <div class="dato" style="border-color:var(--rf)"><p data-nom="rf"></p><p id="rRf">—</p></div>
+            <div class="dato" style="border-color:var(--oro)"><p>Oro</p><input id="rOro" class="repIn" data-rep="oro" inputmode="decimal"></div>
+            <div class="dato" style="border-color:var(--plata)"><p>Plata</p><input id="rPlata" class="repIn" data-rep="plata" inputmode="decimal"></div>
+            <div class="dato" style="border-color:var(--world)"><p data-nom="w"></p><input id="rWorld" class="repIn" data-rep="w" inputmode="decimal"></div>
+            <div class="dato" style="border-color:var(--em)"><p data-nom="e"></p><input id="rEm" class="repIn" data-rep="e" inputmode="decimal"></div>
+            <div class="dato" style="border-color:var(--rf)"><p data-nom="rf"></p><input id="rRf" class="repIn" data-rep="rf" inputmode="decimal"></div>
           </div>
+          <p class="nota" id="repTotal" style="margin:0 0 12px"></p>
           <button id="btnAnotarGlobal">Anotar y sumar a los saldos</button>
           <p class="nota" id="avisoSinRatio" style="margin-top:10px;color:var(--em)"></p>
+        </div>
         </div>
       </div>
 
@@ -300,20 +331,8 @@
         <div id="dashProx"></div>
       </div>
 
-      <div class="panel z-ratio ancho">
-        <p class="etiq">Ratio oro/plata</p>
-        <div id="dashRatio"></div>
-      </div>
 
-      <div class="panel z-peso ancho">
-        <p class="etiq">Peso de <span data-nom="e"></span></p>
-        <div id="dashPeso"></div>
-      </div>
 
-      <div class="panel z-evo ancho">
-        <p class="etiq" id="dashEvoTit"></p>
-        <div id="dashEvo"></div>
-      </div>
 
       <p class="nota z-nota">La aportación va primero a equilibrar metales, renta fija y renta variable, y dentro de cada bloque sigue sus reglas: el ratio oro/plata en metales y tu objetivo de emergentes en renta variable.</p>
     </div>
@@ -928,7 +947,7 @@ $("btnColoresReset").addEventListener("click", () => {
  ["partRF","partRF"],["vlRF","vlRF"]].forEach(([id, clave]) => {
   const el = $(id);
   el.value = estado[clave];
-  el.addEventListener("input", () => { estado[clave] = el.value; pintar(); });
+  el.addEventListener("input", () => { estado[clave] = el.value; G.set(clave, el.value); pintar(); });
 });
 $("objMetales").value = estado.objMetales;
 $("objMetales").addEventListener("input", () => {
@@ -1042,13 +1061,37 @@ $("btnAnotarRF").addEventListener("click", () => {
   pintar(); msg("aviso", "Aportación convertida a participaciones", 2500);
 });
 
+const REP_IDS = [["rOro", "oro"], ["rPlata", "plata"], ["rWorld", "w"], ["rEm", "e"], ["rRf", "rf"]];
+let repManual = {};
+function valoresReparto() {
+  const v = {};
+  REP_IDS.forEach(([id, k]) => { v[k] = Math.max(0, num($(id).value)); });
+  return v;
+}
+REP_IDS.forEach(([id, k]) => {
+  $(id).addEventListener("input", () => { repManual[k] = true; $(id).classList.add("tocado"); pintar(); });
+});
+$("impTotal").addEventListener("input", () => { repManual = {}; });
+$("repCuerpo").addEventListener("click", (ev) => {
+  if (ev.target.id === "repReset") { ev.preventDefault(); repManual = {}; pintar(); }
+});
+
 $("btnAnotarGlobal").addEventListener("click", () => {
   const g = calcGlobal(); if (!g) return;
-  sumarUnidades("onzOro", g.mOro, num(estado.oro));
-  sumarUnidades("onzPlata", g.mPlata, num(estado.plata));
-  sumarUnidades("partW", g.fWorld, num(estado.vlW));
-  sumarUnidades("partE", g.fEm, num(estado.vlE));
-  sumarUnidades("partRF", g.aRF, num(estado.vlRF));
+  const v = valoresReparto();
+  const faltan = [];
+  if (v.oro > 0 && !num(estado.oro)) faltan.push("precio del oro");
+  if (v.plata > 0 && !num(estado.plata)) faltan.push("precio de la plata");
+  if (v.w > 0 && !num(estado.vlW)) faltan.push("VL de " + nombre("w"));
+  if (v.e > 0 && !num(estado.vlE)) faltan.push("VL de " + nombre("e"));
+  if (v.rf > 0 && !num(estado.vlRF)) faltan.push("VL de " + nombre("rf"));
+  if (faltan.length) { msg("error", "Falta el " + faltan.join(", ") + ".", 4000); return; }
+  sumarUnidades("onzOro", v.oro, num(estado.oro));
+  sumarUnidades("onzPlata", v.plata, num(estado.plata));
+  sumarUnidades("partW", v.w, num(estado.vlW));
+  sumarUnidades("partE", v.e, num(estado.vlE));
+  sumarUnidades("partRF", v.rf, num(estado.vlRF));
+  repManual = {};
   $("impTotal").value = "";
   anotarPeso(); pintar(); msg("aviso", "Aportación repartida y sumada", 2500);
 });
@@ -1615,7 +1658,7 @@ function pintarDashboard() {
 
   // Aportaciones: plan, pendientes y últimas
   const p = estado.plan, pend = pendientes();
-  const hechas = estado.registro.filter((a) => a.estado === "hecha").sort((a, b) => b.fecha.localeCompare(a.fecha)).slice(0, 4);
+  const hechas = estado.registro.filter((a) => a.estado === "hecha").sort((a, b) => b.fecha.localeCompare(a.fecha)).slice(0, 3);
   let t = "";
   if (p.activo) {
     const tot = num(p.met) + num(p.rf) + num(p.rv);
@@ -1632,17 +1675,6 @@ function pintarDashboard() {
     : '<p class="nota">Aún no hay aportaciones confirmadas.</p>';
   $("dashProx").innerHTML = t;
 
-  // Gráficas
-  const css = getComputedStyle(document.body);
-  const vacia = (id) => { $(id).innerHTML = '<p class="nota">Aún no hay datos suficientes.</p>'; };
-  if (estado.serieRatio.length > 1) grafico($("dashRatio"), estado.serieRatio, css.getPropertyValue("--oro"), [{ v: 70 }, { v: 85, color: css.getPropertyValue("--plata") }]);
-  else vacia("dashRatio");
-  if (estado.seriePeso.length > 1) grafico($("dashPeso"), estado.seriePeso, css.getPropertyValue("--em"), [{ v: bMin() }, { v: objEm() }, { v: bMax() }], bMin() - 5, bMax() + 5);
-  else vacia("dashPeso");
-  const evo = (estado.histW || []).map((x) => ({ fecha: x.fecha, v: +(x.v * (x.p != null && x.p > 0 ? x.p : num(estado.partW))).toFixed(2) }));
-  $("dashEvoTit").textContent = nombre("w") + " · mi dinero";
-  if (evo.length > 1) grafico($("dashEvo"), evo, css.getPropertyValue("--world"), []);
-  else vacia("dashEvo");
 }
 
 /* ---------- Cálculos ---------- */
@@ -2122,12 +2154,22 @@ function pintar() {
     $("repVacio").classList.toggle("oculto", !!g);
     $("repCuerpo").classList.toggle("oculto", !g);
     if (g) {
-      $("rbMet").style.width = (g.aMet / g.a) * 100 + "%";
-      $("rbRf").style.width = (g.aRF / g.a) * 100 + "%";
-      $("rbFon").style.width = (g.aFon / g.a) * 100 + "%";
-      $("rOro").textContent = eur(g.mOro); $("rPlata").textContent = eur(g.mPlata);
-      $("rWorld").textContent = eur(g.fWorld); $("rEm").textContent = eur(g.fEm);
-      $("rRf").textContent = eur(g.aRF);
+      const calc = { oro: g.mOro, plata: g.mPlata, w: g.fWorld, e: g.fEm, rf: g.aRF };
+      REP_IDS.forEach(([id, k]) => {
+        const el = $(id);
+        if (!(k in repManual)) { el.value = calc[k] > 0 ? calc[k].toFixed(2).replace(".", ",") : "0"; el.classList.remove("tocado"); }
+      });
+      const v = valoresReparto(), tot = v.oro + v.plata + v.w + v.e + v.rf;
+      const met = v.oro + v.plata, rv = v.w + v.e;
+      $("rbMet").style.width = (tot > 0 ? met / tot * 100 : 0) + "%";
+      $("rbRf").style.width = (tot > 0 ? v.rf / tot * 100 : 0) + "%";
+      $("rbFon").style.width = (tot > 0 ? rv / tot * 100 : 0) + "%";
+      const dif = tot - g.a, cambiado = Object.keys(repManual).length > 0;
+      $("repTotal").innerHTML = cambiado
+        ? "Total " + eurReal(tot) + (Math.abs(dif) >= 0.01
+            ? ' <span class="' + (dif > 0 ? "pos" : "neg") + '">(' + (dif > 0 ? "+" : "") + eurReal(dif) + " sobre lo previsto)</span>"
+            : "") + ' · <a href="#" id="repReset" style="color:var(--texto)">volver al reparto calculado</a>'
+        : "Puedes cambiar cualquier importe si algo está más barato o más caro este mes.";
       $("avisoSinRatio").textContent = g.sinRatio ? "Sin precios de oro y plata se reparte 75/25 por defecto." : "";
     }
   }
