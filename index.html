@@ -1,0 +1,1920 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Mi cartera">
+<meta name="theme-color" content="#14171B">
+<title>Mi cartera</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;700&family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --fondo:#14171B; --panel:#1B1F25; --texto:#EDEFF2; --suave:#A8B0B9; --tenue:#7E868F;
+    --borde:#39414A; --fuerte:#5A636D; --banda:#232E38;
+    --oro:#C9A227; --plata:#AEB6BF; --world:#7C9CBF; --em:#C97B3C; --rf:#6FA88B; --pos:#5FB87E; --neg:#D2685C;
+  }
+  body.claro{
+    --fondo:#F5F5F3; --panel:#FFFFFF; --texto:#16181C; --suave:#5A6169; --tenue:#8A9199;
+    --borde:#D4D6D9; --fuerte:#9AA0A6; --banda:#E4E9EE;
+    --oro:#B8860B; --plata:#7A828C; --world:#3A6EA5; --em:#B0632A; --rf:#3F7D63; --pos:#2E7D4F; --neg:#B23B2C;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--fondo);color:var(--texto);font-family:'IBM Plex Sans',system-ui,sans-serif;
+       padding:calc(46px + env(safe-area-inset-top)) 20px calc(32px + env(safe-area-inset-bottom));color-scheme:dark}
+  body.claro{color-scheme:light}
+  .wrap{max-width:448px;margin:0 auto}
+  h1{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:36px;text-transform:uppercase;margin:0;line-height:1}
+  .cifra{font-family:'Barlow Condensed',sans-serif;font-weight:700}
+  .mono{font-family:'IBM Plex Mono',monospace}
+  .etiq{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--suave);margin:0 0 4px}
+  .panel{border:1px solid var(--borde);background:var(--panel);border-radius:2px;padding:16px;margin-bottom:16px}
+  .fila{display:flex;justify-content:space-between;align-items:flex-end}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .grid>*{min-width:0}
+  label{min-width:0}
+  input[type=date]{-webkit-appearance:none;appearance:none;width:100%;min-width:0;max-width:100%;
+                   font-size:15px;padding:9px 10px;text-align:left}
+  input[type=date]::-webkit-date-and-time-value{text-align:left;margin:0}
+  input{width:100%;margin-top:4px;background:var(--panel);color:var(--texto);-webkit-text-fill-color:var(--texto);
+        border:1px solid var(--borde);border-radius:2px;padding:10px 12px;font-size:16px;outline:none;
+        font-family:'IBM Plex Mono',monospace}
+  input::placeholder{color:var(--tenue);opacity:1}
+  textarea{width:100%;margin-top:10px;background:var(--panel);color:var(--texto);border:1px solid var(--borde);
+           border-radius:2px;padding:10px 12px;font-size:14px;font-family:'IBM Plex Mono',monospace;resize:vertical}
+  select{width:100%;margin-top:4px;background:var(--panel);color:var(--texto);border:1px solid var(--borde);
+         border-radius:2px;padding:10px 12px;font-size:16px;font-family:inherit}
+  input.grande{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:30px;border:none;background:transparent;padding:12px 8px}
+  .campoGrande{display:flex;align-items:center;margin-top:4px;background:var(--panel);border:1px solid var(--borde);border-radius:2px}
+  .campoGrande span{padding-left:12px;color:var(--suave)}
+  button{cursor:pointer;font-family:inherit;background:transparent;color:var(--texto);
+         border:1px solid var(--fuerte);border-radius:2px;padding:10px 0;width:100%;
+         font-size:11px;letter-spacing:.18em;text-transform:uppercase}
+  button:disabled{opacity:.5}
+  .tabs{display:flex;gap:8px;margin-bottom:22px}
+  .tabs button{padding:13px 0}
+  .tabs .principal{flex:2;font-size:13px;letter-spacing:.16em;font-weight:500}
+  .tabs .sec{flex:1;font-size:10px;letter-spacing:.06em;color:var(--tenue);border-color:var(--borde);padding:13px 2px}
+  .tabs .activa{background:var(--texto);color:var(--fondo);border-color:var(--texto)}
+  .tabs .sec.activa{background:transparent;color:var(--texto);border-color:var(--texto)}
+  .barra{display:flex;height:12px;border-radius:2px;overflow:hidden;margin-bottom:12px}
+  .barra div{transition:width .5s}
+  .dato{border-left:3px solid;padding-left:12px}
+  .dato p:first-child{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--suave);margin:0}
+  .dato p:last-child{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:26px;margin:0}
+  .regla{position:relative;height:36px}
+  .regla .eje{position:absolute;top:12px;left:0;right:0;height:1px;background:var(--borde)}
+  .regla .marca{position:absolute;top:0}
+  .regla .marca i{display:block;width:1px;height:24px;background:var(--fuerte);transform:translateX(-50%)}
+  .regla .marca b{display:block;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--suave);
+                  transform:translateX(-50%);margin-top:2px;font-weight:400}
+  .aguja{position:absolute;top:0;transition:left .5s}
+  .aguja i{display:block;width:3px;height:24px;transform:translateX(-50%)}
+  .vacio{border:1px dashed var(--borde);border-radius:2px;padding:20px;text-align:center;margin-bottom:24px;
+         font-size:13px;color:var(--suave)}
+  .nota{font-size:11px;color:var(--tenue);line-height:1.6}
+  .sep{border-top:1px solid var(--borde);padding-top:20px;margin-bottom:24px}
+  .oculto{display:none}
+  .chk{display:flex;align-items:center;gap:10px;padding:8px 0;font-size:14px}
+  .chk input{width:20px;height:20px;margin:0;accent-color:var(--world)}
+  .chk.cabecera{padding:0;font-size:15px;font-weight:500}
+  .panel.apagado{opacity:.55}
+  .panel.apagado .cuerpoBlq{display:none}
+  .apunte{border:1px solid var(--borde);border-radius:2px;padding:12px 14px;margin-bottom:10px;background:var(--panel)}
+  .apunte .lin{display:flex;justify-content:space-between;align-items:center;gap:10px}
+  .apunte .fec{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--suave)}
+  .apunte .imp{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:22px}
+  .badge{font-size:9px;letter-spacing:.14em;text-transform:uppercase;padding:3px 7px;border-radius:2px;border:1px solid}
+  .b-pend{color:var(--em);border-color:var(--em)}
+  .b-hecha{color:var(--rf);border-color:var(--rf)}
+  .b-omit{color:var(--tenue);border-color:var(--borde)}
+  .acciones{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+  .acciones button{width:auto;flex:1;min-width:88px;padding:8px 6px;font-size:10px;letter-spacing:.08em}
+  .velo{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:40}
+  .hoja{position:fixed;left:0;right:0;bottom:0;top:12%;z-index:50;background:var(--fondo);
+        border-top:1px solid var(--fuerte);border-radius:12px 12px 0 0;
+        padding:0 20px calc(28px + env(safe-area-inset-bottom));overflow-y:auto;-webkit-overflow-scrolling:touch}
+  .hojaCab{position:sticky;top:0;background:var(--fondo);display:flex;justify-content:space-between;
+           align-items:center;padding:18px 0 14px;border-bottom:1px solid var(--borde);margin-bottom:18px;z-index:2}
+  .segm{display:flex;gap:8px;margin-bottom:14px}
+  .colores{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .colores label{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--suave)}
+  .colores input{width:40px;height:32px;padding:0;border:1px solid var(--borde);border-radius:2px;background:none;margin:0}
+  .pos{color:var(--pos)} .neg{color:var(--neg)}
+  .result{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:22px;margin:6px 0 0}
+  .result small{font-family:'IBM Plex Sans',sans-serif;font-weight:400;font-size:12px;color:var(--suave);display:block;letter-spacing:0}
+  .segm button{flex:1;padding:9px 4px;font-size:10px;letter-spacing:.06em;border-color:var(--borde);color:var(--tenue)}
+  .segm button.on{border-color:var(--texto);color:var(--fondo);background:var(--texto);font-weight:500}
+  .segmGrande{margin-bottom:18px}
+  .segmGrande button{padding:12px 4px;font-size:12px;letter-spacing:.14em}
+  .colores label{position:relative;padding:6px 8px;border:1px solid transparent;border-radius:2px}
+  .colores label.tocado{border-color:var(--borde)}
+  .punto{position:absolute;top:2px;right:2px;width:9px;height:9px;border-radius:50%;
+         background:var(--em);border:1.5px solid var(--fondo)}
+  .alerta{border:1px solid var(--em);border-radius:2px;padding:14px 16px;margin-bottom:18px;background:var(--panel)}
+  .leyenda{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .leyenda .dato:last-child{grid-column:1 / -1}
+  #donut{display:flex;justify-content:center}
+  #donut svg{max-width:200px}
+  #donut .total{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:22px;fill:var(--texto)}
+  #donut .sub{font-size:8px;letter-spacing:.16em;fill:var(--suave)}
+  .msg{font-size:12px;margin-bottom:16px}
+  svg text{font-family:'IBM Plex Mono',monospace;font-size:9px;fill:var(--suave)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="fila" style="margin-bottom:20px">
+    <div>
+      <h1>Mi cartera</h1>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <button id="btnOjo" aria-label="Ocultar saldos" style="width:auto;padding:6px 10px;line-height:0"></button>
+      <button id="btnHist" aria-label="Registro" style="width:auto;padding:6px 10px;line-height:0;position:relative"></button>
+      <button id="btnCalc" aria-label="Calculadora" style="width:auto;padding:6px 10px;line-height:0"></button>
+      <button id="btnCfg" aria-label="Ajustes" style="width:auto;padding:6px 10px;line-height:0"></button>
+    </div>
+  </div>
+
+  <div class="tabs" style="margin-bottom:8px">
+    <button class="principal activa" data-tab="resumen" style="flex:1">Resumen</button>
+  </div>
+  <div class="tabs">
+    <button class="sec" data-tab="metales">Metales</button>
+    <button class="sec" data-tab="rf">R. fija</button>
+    <button class="sec" data-tab="fondos">Fondos</button>
+  </div>
+
+  <p id="aviso" class="msg oculto" style="color:var(--world)"></p>
+  <p id="error" class="msg oculto" style="color:var(--em)"></p>
+
+  <div id="alertaPend" class="alerta oculto">
+    <div>
+      <p class="etiq" style="color:var(--em);margin:0 0 4px">Aportaciones sin confirmar</p>
+      <p id="alertaTxt" style="font-size:13px;line-height:1.5;margin:0"></p>
+    </div>
+    <div class="acciones" style="margin-top:12px">
+      <button id="btnIrPend">Ver el registro</button>
+      <button id="btnCerrarAlerta">Ahora no</button>
+    </div>
+  </div>
+
+  <!-- ===== RESUMEN ===== -->
+  <section id="tab-resumen">
+    <div id="resVacio" class="vacio">Guarda los saldos en Metales y Fondos y aquí verás el total de la cartera.</div>
+    <div id="resCuerpo" class="oculto">
+      <div class="panel">
+        <p class="etiq">Patrimonio total</p>
+        <div id="donut" style="margin:4px 0 14px"></div>
+        <div class="leyenda">
+          <div class="dato" style="border-color:var(--oro)"><p>Metales · <span id="pMet">0</span>%</p><p id="vMet">—</p></div>
+          <div class="dato" style="border-color:var(--rf)"><p>Renta fija · <span id="pRf">0</span>%</p><p id="vRf">—</p></div>
+          <div class="dato" style="border-color:var(--world)"><p>Renta variable · <span id="pFon">0</span>%</p><p id="vFon">—</p></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <p class="etiq">Rentabilidad</p>
+        <p class="result" id="resGanancia" style="font-size:30px;margin:2px 0 14px"></p>
+        <div class="grid">
+          <div class="dato" style="border-color:var(--suave)"><p>Invertido</p><p id="resInvertido">—</p></div>
+          <div class="dato" style="border-color:var(--texto)"><p>Valor hoy</p><p id="resValor">—</p></div>
+        </div>
+        <p class="nota" id="resNotaInv" style="margin:12px 0 0"></p>
+      </div>
+
+      <div class="panel">
+        <p class="etiq">Dentro de metales</p>
+        <div class="barra"><div id="bOro" style="background:var(--oro)"></div><div id="bPlata" style="background:var(--plata)"></div></div>
+        <div class="grid">
+          <div class="dato" style="border-color:var(--oro)"><p>Oro · <span id="pOroM">0</span>%</p><p id="vOroM">—</p></div>
+          <div class="dato" style="border-color:var(--plata)"><p>Plata · <span id="pPlataM">0</span>%</p><p id="vPlataM">—</p></div>
+        </div>
+        <p class="nota" id="notaRatio" style="margin:12px 0 0"></p>
+      </div>
+
+      <div class="panel">
+        <p class="etiq">Dentro de fondos</p>
+        <div class="barra"><div id="bWorld" style="background:var(--world)"></div><div id="bEm" style="background:var(--em)"></div></div>
+        <div class="grid">
+          <div class="dato" style="border-color:var(--world)"><p><span data-nom="w"></span> · <span id="pWorldF">0</span>%</p><p id="vWorldF">—</p></div>
+          <div class="dato" style="border-color:var(--em)"><p><span data-nom="e"></span> · <span id="pEmF">0</span>%</p><p id="vEmF">—</p></div>
+        </div>
+        <p class="nota" id="notaBanda" style="margin:12px 0 0;color:var(--em)"></p>
+      </div>
+
+      <div class="sep">
+        <p class="etiq" style="margin-bottom:12px">Repartir la aportación del mes</p>
+        <label style="display:block;margin-bottom:20px">
+          <span class="etiq">Cuánto aportas este mes</span>
+          <span class="campoGrande"><span>€</span><input id="impTotal" class="grande" inputmode="decimal" placeholder="0"></span>
+        </label>
+        <div class="grid" style="margin-bottom:18px">
+          <label><span class="etiq">Objetivo metales %</span><input id="objMetales" inputmode="decimal" value="10"></label>
+          <label><span class="etiq">Objetivo r. fija %</span><input id="objRF" inputmode="decimal" value="0"></label>
+        </div>
+        <p class="nota" id="objResto" style="margin:-8px 0 18px"></p>
+        <div id="repVacio" style="font-size:13px;color:var(--suave)">Escribe cuánto vas a aportar y te digo cuánto va a cada uno de los cuatro.</div>
+        <div id="repCuerpo" class="oculto">
+          <div class="barra"><div id="rbMet" style="background:var(--oro)"></div><div id="rbRf" style="background:var(--rf)"></div><div id="rbFon" style="background:var(--world)"></div></div>
+          <div class="grid" style="margin-bottom:16px">
+            <div class="dato" style="border-color:var(--oro)"><p>Oro</p><p id="rOro">—</p></div>
+            <div class="dato" style="border-color:var(--plata)"><p>Plata</p><p id="rPlata">—</p></div>
+            <div class="dato" style="border-color:var(--world)"><p data-nom="w"></p><p id="rWorld">—</p></div>
+            <div class="dato" style="border-color:var(--em)"><p data-nom="e"></p><p id="rEm">—</p></div>
+            <div class="dato" style="border-color:var(--rf)"><p data-nom="rf"></p><p id="rRf">—</p></div>
+          </div>
+          <button id="btnAnotarGlobal">Anotar y sumar a los saldos</button>
+          <p class="nota" id="avisoSinRatio" style="margin-top:10px;color:var(--em)"></p>
+        </div>
+      </div>
+
+      <p class="nota">La aportación va primero a equilibrar metales y fondos, y dentro de cada bloque sigue sus reglas: el ratio oro/plata en metales, el 75/25 en fondos.</p>
+    </div>
+  </section>
+
+  <!-- ===== METALES ===== -->
+  <section id="tab-metales" class="oculto">
+    <div class="panel">
+      <div class="fila" style="margin-bottom:16px">
+        <div>
+          <p class="etiq">Ratio actual</p>
+          <p class="cifra" id="mRatio" style="font-size:48px;margin:0;line-height:1">—</p>
+        </div>
+        <div style="text-align:right">
+          <p id="mTramo" style="font-size:14px;font-weight:500;margin:0"></p>
+          <p id="mTramoD" style="font-size:11px;color:var(--suave);margin:0"></p>
+        </div>
+      </div>
+      <div class="regla" id="reglaRatio"><div class="eje"></div></div>
+    </div>
+
+    <div style="margin-bottom:12px">
+      <button id="btnPrecios">Traer precios de mercado</button>
+      <p class="nota" id="fechaPrecios" style="text-align:center;margin-top:6px"></p>
+    </div>
+
+    <div class="grid" style="margin-bottom:12px">
+      <label><span class="etiq">Oro €/oz</span><input id="oro" inputmode="decimal" placeholder="0"></label>
+      <label><span class="etiq">Plata €/oz</span><input id="plata" inputmode="decimal" placeholder="0"></label>
+    </div>
+    <div class="grid" style="margin-bottom:8px">
+      <label><span class="etiq">Onzas de oro</span><input id="onzOro" inputmode="decimal" placeholder="0"></label>
+      <label><span class="etiq">Onzas de plata</span><input id="onzPlata" inputmode="decimal" placeholder="0"></label>
+    </div>
+    <p class="nota" id="valMetales" style="margin:0 0 12px"></p>
+    <div style="margin-bottom:20px"><button id="btnGuardarMetales">Guardar</button></div>
+
+    <label style="display:block;margin-bottom:20px">
+      <span class="etiq">Cuánto aportas este mes</span>
+      <span class="campoGrande"><span>€</span><input id="impMetal" class="grande" inputmode="decimal" placeholder="0"></span>
+    </label>
+
+    <div id="mVacio" class="vacio">Pon los dos precios y el importe del mes para ver el reparto.</div>
+    <div id="mCuerpo" class="oculto" style="margin-bottom:24px">
+      <div class="barra"><div id="mbOro" style="background:var(--oro)"></div><div id="mbPlata" style="background:var(--plata)"></div></div>
+      <div class="grid">
+        <div class="dato" style="border-color:var(--oro)"><p>Oro · <span id="mpOro">0</span>%</p><p id="mvOro">—</p></div>
+        <div class="dato" style="border-color:var(--plata)"><p>Plata · <span id="mpPlata">0</span>%</p><p id="mvPlata">—</p></div>
+      </div>
+      <div style="margin-top:16px"><button id="btnAnotarMetal">Anotar y sumar a los saldos</button></div>
+    </div>
+
+    <div class="sep">
+      <p class="etiq" style="margin-bottom:12px">Ratio · tu histórico</p>
+      <div id="graficoRatio"><p style="font-size:13px;color:var(--suave)">Cada vez que traigas o guardes precios se anota el ratio del día.</p></div>
+    </div>
+
+    <p class="nota">Reparto: bajo 50 → 90/10 · de 50 a 70 → 75/25 · de 70 a 85 sube en línea recta hasta 30/70 · sobre 85 → 30/70.</p>
+  </section>
+
+  <!-- ===== RENTA FIJA ===== -->
+  <section id="tab-rf" class="oculto">
+    <div class="panel">
+      <p class="etiq" data-nom="rf"></p>
+      <p class="cifra" id="rfTotal" style="font-size:44px;margin:0;line-height:1">—</p>
+      <p class="nota" id="rfPeso" style="margin:8px 0 0"></p>
+    </div>
+
+    <div class="grid" style="margin-bottom:8px">
+      <label><span class="etiq">Participaciones</span><input id="partRF" inputmode="decimal" placeholder="0"></label>
+      <label><span class="etiq">Valor liquidativo €</span><input id="vlRF" inputmode="decimal" placeholder="0"></label>
+    </div>
+    <p class="nota" id="valRF" style="margin:0 0 6px"></p>
+    <p class="nota" id="camRF" style="margin:0 0 12px"></p>
+    <div style="margin-bottom:12px"><button id="btnEvoRF">＋ Ver evolución</button></div>
+    <div id="evoRF" class="oculto" style="margin-bottom:12px">
+      <div class="segm"><button data-modo="vl">Valor liquidativo</button><button data-modo="eur">Mi dinero</button></div>
+      <div class="grid" style="margin-bottom:14px"><label><span class="etiq">Desde</span><input class="fDesde" type="date"></label><label><span class="etiq">Hasta</span><input class="fHasta" type="date"></label></div>
+      <p class="etiq" style="margin-bottom:8px" id="hRF"></p>
+      <div id="gRF"></div>
+      <p class="result" id="rsRF"></p>
+    </div>
+    <div style="margin-bottom:20px"><button id="btnGuardarRF">Guardar saldo</button></div>
+
+    <label style="display:block;margin-bottom:20px">
+      <span class="etiq">Cuánto aportas este mes</span>
+      <span class="campoGrande"><span>€</span><input id="impRF" class="grande" inputmode="decimal" placeholder="0"></span>
+    </label>
+    <div style="margin-bottom:24px"><button id="btnAnotarRF">Anotar y sumar al saldo</button></div>
+
+    <p class="nota">La renta fija es el bloque estable de la cartera: amortigua las caídas de la bolsa y de los metales. Su objetivo en porcentaje se fija desde el resumen.</p>
+  </section>
+
+  <!-- ===== FONDOS ===== -->
+  <section id="tab-fondos" class="oculto">
+    <div class="panel">
+      <div class="fila" style="margin-bottom:16px">
+        <div>
+          <p class="etiq"><span data-nom="e"></span> hoy</p>
+          <p class="cifra" id="fPeso" style="font-size:48px;margin:0;line-height:1">—</p>
+        </div>
+        <div style="text-align:right">
+          <p id="fEstado" style="font-size:14px;font-weight:500;margin:0">Sin datos</p>
+          <p style="font-size:11px;color:var(--suave);margin:0" id="fObjTxt"></p>
+        </div>
+      </div>
+      <div class="regla" id="reglaPeso"><div class="eje"></div><div style="position:absolute;top:9px;height:7px;background:var(--banda);left:25%;width:50%"></div></div>
+    </div>
+
+    <div class="grid" style="margin-bottom:12px">
+      <label><span class="etiq">Particip. <span data-nom="w"></span></span><input id="partW" inputmode="decimal" placeholder="0"></label>
+      <label><span class="etiq">VL <span data-nom="w"></span> €</span><input id="vlW" inputmode="decimal" placeholder="0"></label>
+    </div>
+    <div class="grid" style="margin-bottom:8px">
+      <label><span class="etiq">Particip. <span data-nom="e"></span></span><input id="partE" inputmode="decimal" placeholder="0"></label>
+      <label><span class="etiq">VL <span data-nom="e"></span> €</span><input id="vlE" inputmode="decimal" placeholder="0"></label>
+    </div>
+    <p class="nota" id="valFondos" style="margin:0 0 6px"></p>
+    <p class="nota" id="camFondos" style="margin:0 0 12px"></p>
+    <div style="margin-bottom:12px"><button id="btnEvoF">＋ Ver evolución</button></div>
+    <div id="evoF" class="oculto" style="margin-bottom:12px">
+      <div class="segm"><button data-modo="vl">Valor liquidativo</button><button data-modo="eur">Mi dinero</button></div>
+      <div class="grid" style="margin-bottom:14px"><label><span class="etiq">Desde</span><input class="fDesde" type="date"></label><label><span class="etiq">Hasta</span><input class="fHasta" type="date"></label></div>
+      <p class="etiq" style="margin-bottom:8px" id="hW"></p>
+      <div id="gW"></div>
+      <p class="result" id="rsW"></p>
+      <p class="etiq" style="margin:18px 0 8px" id="hE"></p>
+      <div id="gE"></div>
+      <p class="result" id="rsE"></p>
+    </div>
+    <div style="margin-bottom:20px"><button id="btnGuardarFondos">Guardar saldos</button></div>
+
+    <label style="display:block;margin-bottom:20px">
+      <span class="etiq">Cuánto aportas este mes</span>
+      <span class="campoGrande"><span>€</span><input id="impFondo" class="grande" inputmode="decimal" placeholder="0"></span>
+    </label>
+
+    <div id="fVacio" class="vacio">Pon los dos saldos y el importe del mes para ver el reparto.</div>
+    <div id="fCuerpo" class="oculto" style="margin-bottom:24px">
+      <div class="barra"><div id="fbWorld" style="background:var(--world)"></div><div id="fbEm" style="background:var(--em)"></div></div>
+      <div class="grid">
+        <div class="dato" style="border-color:var(--world)"><p data-nom="w"></p><p id="fvWorld">—</p></div>
+        <div class="dato" style="border-color:var(--em)"><p data-nom="e"></p><p id="fvEm">—</p></div>
+      </div>
+      <p class="nota" id="fDespues" style="margin-top:12px;color:var(--suave)"></p>
+      <div style="margin-top:16px"><button id="btnAnotarFondo">Anotar y sumar a los saldos</button></div>
+    </div>
+
+    <div id="fTraspaso" class="panel oculto" style="border-color:var(--em)">
+      <p class="etiq" style="color:var(--em)">Toca traspaso</p>
+      <p id="fTraspasoTxt" style="font-size:13px;line-height:1.6;margin:0"></p>
+      <p class="nota" style="margin:8px 0 0">Entre fondos el traspaso no tributa hasta que reembolses.</p>
+    </div>
+
+    <div class="sep">
+      <p class="etiq" style="margin-bottom:12px">Peso de emergentes · tu histórico</p>
+      <div id="graficoPeso"><p style="font-size:13px;color:var(--suave)">Anota un par de aportaciones y aquí verás cómo se mueve el peso.</p></div>
+    </div>
+
+    <p class="nota">La aportación va al fondo que se haya quedado por debajo, hasta recuperar el 75/25. Solo se traspasa si emergentes sale de la banda 20–30%.</p>
+  </section>
+
+  <!-- ===== LARGO PLAZO ===== -->
+  <section id="tab-plazo" class="hoja oculto">
+    <div class="hojaCab">
+      <p class="etiq" style="margin:0">Calculadora a largo plazo</p>
+      <button id="btnCerrarPlazo" style="width:auto;padding:6px 12px;font-size:11px;letter-spacing:.12em">Cerrar</button>
+    </div>
+
+    <div class="panel" id="blqMet">
+      <label class="chk cabecera"><input type="checkbox" id="incMet" checked><span>Metales</span></label>
+      <div class="cuerpoBlq">
+        <div class="grid" style="margin-top:14px">
+          <label><span class="etiq">Aportación €/mes</span><input id="pAmet" inputmode="decimal" placeholder="0"></label>
+          <label><span class="etiq">Rentabilidad %</span><input id="pRmet" inputmode="decimal" value="4"></label>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" id="blqRF">
+      <label class="chk cabecera"><input type="checkbox" id="incRF" checked><span>Renta fija</span></label>
+      <div class="cuerpoBlq">
+        <div class="grid" style="margin-top:14px">
+          <label><span class="etiq">Aportación €/mes</span><input id="pArf" inputmode="decimal" placeholder="0"></label>
+          <label><span class="etiq">Rentabilidad %</span><input id="pRrf" inputmode="decimal" value="3"></label>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" id="blqRV">
+      <label class="chk cabecera"><input type="checkbox" id="incRV" checked><span>Renta variable</span></label>
+      <div class="cuerpoBlq">
+        <div class="grid" style="margin-top:14px">
+          <label><span class="etiq">Aportación €/mes</span><input id="pArv" inputmode="decimal" placeholder="0"></label>
+          <label><span class="etiq">Rentabilidad %</span><input id="pRrv" inputmode="decimal" value="7"></label>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid" style="margin:20px 0 12px">
+      <label><span class="etiq">Años</span><input id="pAnios" inputmode="decimal" value="20"></label>
+      <label><span class="etiq">Inflación %</span><input id="pInfl" inputmode="decimal" value="2"></label>
+    </div>
+    <p class="nota" id="pPartida" style="margin:0 0 22px"></p>
+
+    <div id="pVacio" class="vacio">Marca al menos un bloque y pon los años para ver la proyección.</div>
+    <div id="pCuerpo" class="oculto">
+      <div class="panel">
+        <p class="etiq">Valor estimado a <span id="pAniosTxt">20</span> años</p>
+        <p class="cifra" id="pCentral" style="font-size:44px;margin:0 0 2px;line-height:1">—</p>
+        <p class="nota" id="pRango" style="margin:0"></p>
+      </div>
+
+      <div class="panel">
+        <p class="etiq">En euros de hoy</p>
+        <p class="cifra" id="pReal" style="font-size:34px;margin:0 0 2px;line-height:1">—</p>
+        <p class="nota" id="pRealNota" style="margin:0"></p>
+      </div>
+
+      <div class="grid" style="margin-bottom:20px">
+        <div class="dato" style="border-color:var(--suave)"><p>Aportado</p><p id="pAportado">—</p></div>
+        <div class="dato" style="border-color:var(--world)"><p>Ganancia</p><p id="pGanancia">—</p></div>
+      </div>
+
+      <div class="sep">
+        <p class="etiq" style="margin-bottom:12px">Evolución · nominal y en euros de hoy</p>
+        <div id="graficoPlazo"></div>
+      </div>
+
+      <p class="nota">Esto es una calculadora de interés compuesto, no una predicción. La bolsa no da el mismo porcentaje cada año y el orden en que lleguen las subidas y bajadas cambia el resultado. Úsalo para ver el orden de magnitud, no como una cifra fiable.</p>
+    </div>
+  </section>
+
+  <!-- ===== REGISTRO ===== -->
+  <section id="tab-hist" class="hoja oculto">
+    <div class="hojaCab">
+      <p class="etiq" style="margin:0">Registro de aportaciones</p>
+      <button id="btnCerrarHist" style="width:auto;padding:6px 12px;font-size:11px;letter-spacing:.12em">Cerrar</button>
+    </div>
+
+    <div class="panel">
+      <label class="chk cabecera"><input type="checkbox" id="planActivo"><span>Aportación automática</span></label>
+      <div class="cuerpoBlq">
+        <p class="nota" style="margin:12px 0 0">Cada mes se crea una anotación pendiente con estos importes. Tú la confirmas, la cambias o la omites.</p>
+        <div style="max-width:120px;margin-top:14px">
+          <label><span class="etiq">Día del mes</span><input id="planDia" inputmode="decimal" value="2"></label>
+        </div>
+        <div class="grid" style="margin-top:12px">
+          <label><span class="etiq">Metales €</span><input id="planMet" inputmode="decimal" placeholder="0"></label>
+          <label><span class="etiq">Renta fija €</span><input id="planRF" inputmode="decimal" placeholder="0"></label>
+        </div>
+        <div style="max-width:calc(50% - 6px);margin-top:12px">
+          <label><span class="etiq">R. variable €</span><input id="planRV" inputmode="decimal" placeholder="0"></label>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <p class="etiq">Total aportado</p>
+      <p class="cifra" id="hTotal" style="font-size:38px;margin:0;line-height:1">—</p>
+      <p class="nota" id="hResumen" style="margin:8px 0 0"></p>
+    </div>
+
+    <div style="margin-bottom:16px"><button id="btnNueva">Añadir aportación manual</button></div>
+
+    <div id="listaHist"></div>
+
+    <p class="nota" style="margin-top:20px">Confirmar una anotación suma sus importes a los saldos de cada bloque, repartiendo metales según el ratio y la renta variable según el 75/25.</p>
+  </section>
+
+  <!-- ===== AJUSTES ===== -->
+  <div id="velo" class="velo oculto"></div>
+  <section id="tab-cfg" class="hoja oculto">
+    <div class="hojaCab">
+      <p class="etiq" style="margin:0">Ajustes</p>
+      <button id="btnCerrarCfg" style="width:auto;padding:6px 12px;font-size:11px;letter-spacing:.12em">Cerrar</button>
+    </div>
+
+    <div class="segm segmGrande" id="cfgNav">
+      <button data-cfg="apariencia" class="on">Apariencia</button>
+      <button data-cfg="fondos">Fondos</button>
+    </div>
+
+    <div id="cfg-apariencia">
+    <div class="panel">
+      <p class="etiq">Tema</p>
+      <div class="segm" style="margin-top:12px">
+        <button data-tema="oscuro">Oscuro</button>
+        <button data-tema="claro">Claro</button>
+      </div>
+      <p class="etiq" style="margin-top:6px">Tono de fondo</p>
+      <div class="segm" id="tonos" style="margin-top:8px;flex-wrap:wrap"></div>
+      <p class="etiq" style="margin-top:14px">Colores</p>
+      <div class="colores" id="colores"></div>
+      <div style="margin-top:14px"><button id="btnColoresReset">Restaurar colores</button></div>
+    </div>
+    </div>
+
+    <div id="cfg-fondos" class="oculto">
+    <div class="panel">
+      <p class="etiq">Nombres de los fondos</p>
+      <label style="display:block;margin-top:12px"><span class="etiq">Renta variable global</span><input id="cNomW" placeholder="MSCI World"></label>
+      <label style="display:block;margin-top:12px"><span class="etiq">Renta variable emergente</span><input id="cNomE" placeholder="Emergentes"></label>
+      <label style="display:block;margin-top:12px"><span class="etiq">Renta fija</span><input id="cNomRF" placeholder="Renta fija"></label>
+    </div>
+
+    <div class="panel">
+      <p class="etiq">Puesta en marcha</p>
+      <p class="nota" style="margin:8px 0 0">Pon lo que tienes hoy en cada sitio y la app calcula las cantidades sola. Solo hay que hacerlo una vez.</p>
+
+      <p class="etiq" style="margin-top:16px">Metales · valor actual</p>
+      <div class="grid" style="margin-top:8px">
+        <label><span class="etiq">En oro €</span><input id="iOro" inputmode="decimal" placeholder="0"></label>
+        <label><span class="etiq">En plata €</span><input id="iPlata" inputmode="decimal" placeholder="0"></label>
+      </div>
+      <p class="nota" id="iNotaMet" style="margin:8px 0 0"></p>
+
+      <p class="etiq" style="margin-top:16px">Fondos · valor actual y VL</p>
+      <div class="grid" style="margin-top:8px">
+        <label><span class="etiq" id="iLabW"></span><input id="iW" inputmode="decimal" placeholder="valor €"></label>
+        <label><span class="etiq">Su VL €</span><input id="iVlW" inputmode="decimal" placeholder="0"></label>
+      </div>
+      <div class="grid" style="margin-top:10px">
+        <label><span class="etiq" id="iLabE"></span><input id="iE" inputmode="decimal" placeholder="valor €"></label>
+        <label><span class="etiq">Su VL €</span><input id="iVlE" inputmode="decimal" placeholder="0"></label>
+      </div>
+      <div class="grid" style="margin-top:10px">
+        <label><span class="etiq" id="iLabRF"></span><input id="iRF" inputmode="decimal" placeholder="valor €"></label>
+        <label><span class="etiq">Su VL €</span><input id="iVlRF" inputmode="decimal" placeholder="0"></label>
+      </div>
+
+      <div style="margin-top:16px"><button id="btnPuesta">Calcular y guardar</button></div>
+      <p class="nota" id="iResultado" style="margin:10px 0 0"></p>
+    </div>
+
+    <div class="panel">
+      <p class="etiq">Dinero invertido</p>
+      <p class="nota" style="margin:8px 0 0">Lo que habías aportado antes de empezar a usar la app. A partir de ahí se suman las aportaciones que confirmes en el registro.</p>
+      <label style="display:block;margin-top:12px"><span class="etiq">Aportado antes €</span><input id="cPrevio" inputmode="decimal" placeholder="0"></label>
+    </div>
+
+    <div class="panel">
+      <p class="etiq">Reparto objetivo</p>
+      <div class="grid" style="margin-top:12px">
+        <label><span class="etiq">Metales %</span><input id="cObjMet" inputmode="decimal"></label>
+        <label><span class="etiq">Renta fija %</span><input id="cObjRF" inputmode="decimal"></label>
+      </div>
+      <p class="nota" id="cResto" style="margin:10px 0 0"></p>
+    </div>
+
+    <div class="panel">
+      <p class="etiq">Dentro de renta variable</p>
+      <div class="grid" style="margin-top:12px">
+        <label><span class="etiq">Emergentes objetivo %</span><input id="cObjEm" inputmode="decimal"></label>
+        <label><span class="etiq">Banda mínima %</span><input id="cBmin" inputmode="decimal"></label>
+      </div>
+      <div style="max-width:calc(50% - 6px);margin-top:12px">
+        <label><span class="etiq">Banda máxima %</span><input id="cBmax" inputmode="decimal"></label>
+      </div>
+      <p class="nota" style="margin:10px 0 0">Fuera de esa banda la app te avisa de hacer un traspaso.</p>
+    </div>
+
+    <div class="panel">
+      <p class="etiq">Añadir valor liquidativo antiguo</p>
+      <p class="nota" style="margin:8px 0 0">Para rellenar el histórico con datos que ya tengas y ver la gráfica desde antes.</p>
+      <label style="display:block;margin-top:14px"><span class="etiq">Fondo</span>
+        <select id="cSerie">
+          <option value="histW">Renta variable global</option>
+          <option value="histE">Renta variable emergente</option>
+          <option value="histRF">Renta fija</option>
+          <option value="serieRatio">Ratio oro/plata</option>
+        </select>
+      </label>
+      <div class="grid" style="margin-top:12px">
+        <label><span class="etiq">Fecha</span><input id="cFecha" type="date"></label>
+        <label><span class="etiq">Valor</span><input id="cValor" inputmode="decimal" placeholder="0"></label>
+      </div>
+      <div id="cPos" class="grid" style="margin-top:12px">
+        <label><span class="etiq">Participaciones</span><input id="cPart" inputmode="decimal" placeholder="opcional"></label>
+        <label><span class="etiq">O dinero €</span><input id="cDinero" inputmode="decimal" placeholder="opcional"></label>
+      </div>
+      <p class="nota" id="cPosNota" style="margin:8px 0 0"></p>
+      <div style="margin-top:14px"><button id="btnAddHist">Añadir al histórico</button></div>
+      <div id="listaSerie" style="margin-top:16px"></div>
+    </div>
+
+    <div class="panel">
+      <p class="etiq">Importar desde MyInvestor</p>
+      <p class="nota" style="margin:8px 0 0">Una línea por fecha, en este orden: <strong>fecha · valor liquidativo · participaciones</strong> (lo último es opcional). Separadas por punto y coma, coma o tabulador.</p>
+      <label style="display:block;margin-top:12px"><span class="etiq">Destino</span>
+        <select id="impSerie">
+          <option value="histW"></option>
+          <option value="histE"></option>
+          <option value="histRF"></option>
+        </select>
+      </label>
+      <textarea id="impTexto" rows="5" placeholder="12/03/2026;212,45;18,33&#10;12/04/2026;215,10;20,11"></textarea>
+      <div style="margin-top:12px"><button id="btnImportar">Importar</button></div>
+      <p class="nota" id="impResultado" style="margin:10px 0 0"></p>
+    </div>
+
+    <div class="panel">
+      <p class="etiq">Copia de seguridad</p>
+      <p class="nota" style="margin:8px 0 0">Guarda todo (saldos, históricos, registro y ajustes) en un archivo. Sirve para cambiar de móvil o para no perder nada si actualizas la app.</p>
+      <div style="margin-top:14px"><button id="btnExportar">Exportar mis datos</button></div>
+      <div style="margin-top:10px"><button id="btnCopiar">Copiar al portapapeles</button></div>
+      <div style="margin-top:10px"><button id="btnCsv">Exportar para Excel (CSV)</button></div>
+      <p class="nota" style="margin:10px 0 0">El JSON es el que restaura todo. El CSV es para abrirlo en Excel y mirar los datos, no sirve para restaurar.</p>
+      <p class="etiq" style="margin-top:18px">Restaurar</p>
+      <textarea id="impDatos" rows="4" placeholder="Pega aquí el contenido de tu copia"></textarea>
+      <div style="margin-top:10px"><button id="btnRestaurar">Restaurar copia</button></div>
+      <p class="nota" id="copiaResultado" style="margin:10px 0 0"></p>
+    </div>
+
+    <div class="panel" style="border-color:var(--em)">
+      <p class="etiq" style="color:var(--em)">Borrar todo</p>
+      <p class="nota" style="margin:8px 0 14px">Elimina saldos, históricos y ajustes de este dispositivo. No se puede deshacer.</p>
+      <button id="btnReset">Borrar todos mis datos</button>
+    </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+"use strict";
+function objEm() { const v = num(estado.cfg.objEm); return v > 0 ? v : 25; }
+function bMin() { const v = num(estado.cfg.bmin); return v > 0 ? v : 20; }
+function bMax() { const v = num(estado.cfg.bmax); return v > 0 ? v : 30; }
+function nombre(k) {
+  const c = estado.cfg;
+  return (k === "w" ? c.nomW || "MSCI World" : k === "e" ? c.nomE || "Emergentes" : c.nomRF || "Renta fija");
+}
+const $ = (id) => document.getElementById(id);
+const num = (v) => parseFloat(String(v == null ? "" : v).replace(",", ".")) || 0;
+const hoy = () => new Date().toISOString().slice(0, 10);
+const eurReal = (n) => (isFinite(n) ? n : 0).toLocaleString("es-ES", { style: "currency", currency: "EUR", maximumFractionDigits: 2 });
+const eur = (n) => (estado && estado.oculto ? "••••" : eurReal(n));
+
+/* Almacenamiento: localStorage si se puede, si no memoria (dentro de visores restringidos) */
+const mem = {};
+const G = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v == null ? (k in mem ? mem[k] : d) : JSON.parse(v); } catch (e) { return k in mem ? mem[k] : d; } },
+  set(k, v) { mem[k] = v; try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+};
+
+const estado = {
+  tema: G.get("tema", "oscuro"),
+  oro: G.get("oro", ""), plata: G.get("plata", ""),
+  onzOro: G.get("onzOro", ""), onzPlata: G.get("onzPlata", ""),
+  partW: G.get("partW", ""), vlW: G.get("vlW", ""),
+  partE: G.get("partE", ""), vlE: G.get("vlE", ""),
+  partRF: G.get("partRF", ""), vlRF: G.get("vlRF", ""),
+  objMetales: G.get("objMetales", 10),
+  fechaPrecios: G.get("fechaPrecios", ""),
+  serieRatio: G.get("serieRatio", []),
+  seriePeso: G.get("seriePeso", []),
+  objRF: G.get("objRF", 0),
+  oculto: G.get("oculto", false),
+  plan: G.get("plan", { activo: false, dia: 2, met: "", rf: "", rv: "", ultimo: "" }),
+  registro: G.get("registro", []),
+  modoEvo: G.get("modoEvo", "vl"),
+  fDesde: G.get("fDesde", ""), fHasta: G.get("fHasta", ""),
+  tono: G.get("tono", "grafito"),
+  acentos: G.get("acentos", {}),
+  cfg: G.get("cfg", { nomW: "", nomE: "", nomRF: "", objEm: 25, bmin: 20, bmax: 30 }),
+  histW: G.get("histW", []), histE: G.get("histE", []), histRF: G.get("histRF", []),
+  proy: G.get("proy", { amet: "", arf: "", arv: "", anios: 20, infl: 2, rmet: 4, rrf: 3, rrv: 7, met: true, rf: true, rv: true }),
+};
+
+function repartoPlata(r) {
+  if (r < 50) return 10;
+  if (r < 70) return 25;
+  if (r < 85) return 25 + (r - 70) * 3;
+  return 70;
+}
+function tramo(r) {
+  if (r < 50) return ["Plata cara", "Refugio en oro"];
+  if (r < 70) return ["Zona normal", "Base 75 / 25"];
+  if (r < 85) return ["Transición", "Sesgo creciente a plata"];
+  return ["Plata barata", "Carga máxima en plata"];
+}
+
+function msg(id, texto, ms) {
+  const el = $(id);
+  el.textContent = texto; el.classList.remove("oculto");
+  clearTimeout(el._t);
+  if (ms) el._t = setTimeout(() => el.classList.add("oculto"), ms);
+}
+
+/* ---------- Pestañas ---------- */
+document.querySelectorAll(".tabs button").forEach((b) => {
+  b.addEventListener("click", () => {
+    document.querySelectorAll(".tabs button").forEach((x) => x.classList.remove("activa"));
+    b.classList.add("activa");
+    ["resumen", "metales", "rf", "fondos"].forEach((t) => $("tab-" + t).classList.toggle("oculto", t !== b.dataset.tab));
+    window.scrollTo(0, 0);
+  });
+});
+
+/* ---------- Tema ---------- */
+const TONOS = {
+  oscuro: {
+    grafito: { n: "Grafito", fondo: "#14171B", panel: "#1B1F25", borde: "#39414A", fuerte: "#5A636D", banda: "#232E38" },
+    azulado: { n: "Azulado", fondo: "#111723", panel: "#18202E", borde: "#333F52", fuerte: "#526278", banda: "#1F2B3D" },
+    calido:  { n: "Cálido",  fondo: "#191614", panel: "#211D1A", borde: "#453E38", fuerte: "#6A6058", banda: "#2C2621" },
+    negro:   { n: "Negro",   fondo: "#000000", panel: "#0D0D0D", borde: "#2B2B2B", fuerte: "#4D4D4D", banda: "#1A1A1A" },
+  },
+  claro: {
+    papel:   { n: "Papel",  fondo: "#F5F5F3", panel: "#FFFFFF", borde: "#D4D6D9", fuerte: "#9AA0A6", banda: "#E4E9EE" },
+    frio:    { n: "Frío",   fondo: "#EEF2F6", panel: "#FFFFFF", borde: "#CBD5DF", fuerte: "#8D9AA8", banda: "#DDE6EF" },
+    calido:  { n: "Cálido", fondo: "#F7F3EC", panel: "#FFFDF9", borde: "#DED5C6", fuerte: "#A29683", banda: "#EBE3D5" },
+  },
+};
+const ACENTOS = [["oro","Oro"],["plata","Plata"],["world","R. variable"],["em","Emergentes"],["rf","Renta fija"]];
+const ACENTOS_DEF = {
+  oscuro: { oro: "#C9A227", plata: "#AEB6BF", world: "#7C9CBF", em: "#C97B3C", rf: "#6FA88B" },
+  claro:  { oro: "#B8860B", plata: "#7A828C", world: "#3A6EA5", em: "#B0632A", rf: "#3F7D63" },
+};
+
+function aplicarApariencia() {
+  const grupo = TONOS[estado.tema] || TONOS.oscuro;
+  const t = grupo[estado.tono] || grupo[Object.keys(grupo)[0]];
+  const s = document.body.style;
+  s.setProperty("--fondo", t.fondo); s.setProperty("--panel", t.panel);
+  s.setProperty("--borde", t.borde); s.setProperty("--fuerte", t.fuerte); s.setProperty("--banda", t.banda);
+  const def = ACENTOS_DEF[estado.tema] || ACENTOS_DEF.oscuro;
+  const pers = (estado.acentos || {})[estado.tema] || {};
+  ACENTOS.forEach(([k]) => s.setProperty("--" + k, pers[k] || def[k]));
+  const m = document.querySelector('meta[name=theme-color]');
+  if (m) m.setAttribute("content", t.fondo);
+}
+
+function pintarApariencia() {
+  document.querySelectorAll("[data-tema]").forEach((b) => b.classList.toggle("on", b.dataset.tema === estado.tema));
+  const grupo = TONOS[estado.tema] || TONOS.oscuro;
+  $("tonos").innerHTML = Object.keys(grupo).map((k) =>
+    '<button data-tono="' + k + '"' + (k === estado.tono ? ' class="on"' : "") + ">" + grupo[k].n + "</button>").join("");
+  const def = ACENTOS_DEF[estado.tema] || ACENTOS_DEF.oscuro;
+  const pers = (estado.acentos || {})[estado.tema] || {};
+  $("colores").innerHTML = ACENTOS.map(([k, n]) =>
+    '<label class="' + (pers[k] ? "tocado" : "") + '"><input type="color" data-acento="' + k +
+    '" value="' + (pers[k] || def[k]) + '"><span>' + n + "</span></label>").join("");
+}
+
+function aplicarTema() {
+  document.body.classList.toggle("claro", estado.tema === "claro");
+
+}
+const OJO_ABIERTO = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1.8 12S5.5 5 12 5s10.2 7 10.2 7-3.7 7-10.2 7S1.8 12 1.8 12z"/><circle cx="12" cy="12" r="3"/></svg>';
+const OJO_CERRADO = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1.8 12S5.5 5 12 5s10.2 7 10.2 7-3.7 7-10.2 7S1.8 12 1.8 12z"/><circle cx="12" cy="12" r="3"/><line x1="3" y1="21" x2="21" y2="3"/></svg>';
+function pintarOjo() {
+  $("btnOjo").innerHTML = estado.oculto ? OJO_CERRADO : OJO_ABIERTO;
+  $("btnOjo").setAttribute("aria-label", estado.oculto ? "Mostrar saldos" : "Ocultar saldos");
+}
+$("btnOjo").addEventListener("click", () => {
+  estado.oculto = !estado.oculto; G.set("oculto", estado.oculto); pintarOjo(); pintar();
+});
+
+document.querySelectorAll("[data-tema]").forEach((b) => {
+  b.addEventListener("click", () => {
+    estado.tema = b.dataset.tema; G.set("tema", estado.tema);
+    const grupo = TONOS[estado.tema];
+    if (!grupo[estado.tono]) { estado.tono = Object.keys(grupo)[0]; G.set("tono", estado.tono); }
+    aplicarTema(); aplicarApariencia(); pintarApariencia(); pintar();
+  });
+});
+$("tonos").addEventListener("click", (ev) => {
+  const b = ev.target.closest("[data-tono]"); if (!b) return;
+  estado.tono = b.dataset.tono; G.set("tono", estado.tono);
+  aplicarApariencia(); pintarApariencia(); pintar();
+});
+$("colores").addEventListener("input", (ev) => {
+  const el = ev.target.closest("[data-acento]"); if (!el) return;
+  estado.acentos[estado.tema] = estado.acentos[estado.tema] || {};
+  estado.acentos[estado.tema][el.dataset.acento] = el.value;
+  G.set("acentos", estado.acentos); aplicarApariencia();
+  const lab = el.closest("label"); if (lab) lab.classList.add("tocado");
+  pintar();
+});
+$("btnColoresReset").addEventListener("click", () => {
+  delete estado.acentos[estado.tema]; G.set("acentos", estado.acentos);
+  aplicarApariencia(); pintarApariencia(); pintar();
+});
+
+/* ---------- Enlaces campo <-> estado ---------- */
+[["oro","oro"],["plata","plata"],["onzOro","onzOro"],["onzPlata","onzPlata"],
+ ["partW","partW"],["vlW","vlW"],["partE","partE"],["vlE","vlE"],
+ ["partRF","partRF"],["vlRF","vlRF"]].forEach(([id, clave]) => {
+  const el = $(id);
+  el.value = estado[clave];
+  el.addEventListener("input", () => { estado[clave] = el.value; pintar(); });
+});
+$("objMetales").value = estado.objMetales;
+$("objMetales").addEventListener("input", () => {
+  estado.objMetales = num($("objMetales").value); G.set("objMetales", estado.objMetales); pintar();
+});
+$("objRF").value = estado.objRF;
+$("objRF").addEventListener("input", () => {
+  estado.objRF = num($("objRF").value); G.set("objRF", estado.objRF); pintar();
+});
+["impTotal","impMetal","impFondo","impRF"].forEach((id) => $(id).addEventListener("input", pintar));
+
+/* ---------- Largo plazo ---------- */
+const campoProy = [["pAmet","amet"],["pArf","arf"],["pArv","arv"],["pAnios","anios"],["pInfl","infl"],["pRmet","rmet"],["pRrf","rrf"],["pRrv","rrv"]];
+campoProy.forEach(([id, k]) => {
+  $(id).value = estado.proy[k];
+  $(id).addEventListener("input", () => { estado.proy[k] = $(id).value; G.set("proy", estado.proy); pintar(); });
+});
+const BLOQUES = [["incMet","met","blqMet"],["incRF","rf","blqRF"],["incRV","rv","blqRV"]];
+function pintarBloques() {
+  BLOQUES.forEach(([id, k, panel]) => $(panel).classList.toggle("apagado", estado.proy[k] === false));
+}
+BLOQUES.forEach(([id, k]) => {
+  $(id).checked = estado.proy[k] !== false;
+  $(id).addEventListener("change", () => {
+    estado.proy[k] = $(id).checked; G.set("proy", estado.proy); pintarBloques(); pintar();
+  });
+});
+
+/* ---------- Precios de mercado ---------- */
+$("btnPrecios").addEventListener("click", async () => {
+  const b = $("btnPrecios");
+  b.disabled = true; b.textContent = "Buscando precios…";
+  $("error").classList.add("oculto");
+  const pedir = async (u) => { const r = await fetch(u, { cache: "no-store" }); if (!r.ok) throw new Error("http " + r.status); return r.json(); };
+  try {
+    const [xau, xag, fx] = await Promise.all([
+      pedir("https://api.gold-api.com/price/XAU"),
+      pedir("https://api.gold-api.com/price/XAG"),
+      pedir("https://api.frankfurter.dev/v1/latest?base=USD&symbols=EUR"),
+    ]);
+    const tasa = fx && fx.rates && fx.rates.EUR;
+    if (!xau.price || !xag.price || !tasa) throw new Error("datos incompletos");
+    estado.oro = (xau.price * tasa).toFixed(2);
+    estado.plata = (xag.price * tasa).toFixed(2);
+    $("oro").value = estado.oro; $("plata").value = estado.plata;
+    estado.fechaPrecios = hoy();
+    G.set("oro", estado.oro); G.set("plata", estado.plata); G.set("fechaPrecios", estado.fechaPrecios);
+    anotarRatio();
+    msg("aviso", "Precios actualizados", 2500);
+  } catch (e) {
+    msg("error", "No se han podido traer los precios (" + e.message + "). Escríbelos a mano.");
+  } finally {
+    b.disabled = false; b.textContent = "Traer precios de mercado"; pintar();
+  }
+});
+
+function anotarRatio() {
+  const o = num(estado.oro), p = num(estado.plata);
+  if (!o || !p) return;
+  const s = estado.serieRatio.filter((x) => x.fecha !== hoy());
+  s.push({ fecha: hoy(), v: +(o / p).toFixed(1) });
+  estado.serieRatio = s.slice(-60); G.set("serieRatio", estado.serieRatio);
+}
+
+/* ---------- Guardados ---------- */
+$("btnGuardarMetales").addEventListener("click", () => {
+  ["oro","plata","onzOro","onzPlata"].forEach((k) => G.set(k, estado[k]));
+  anotarRatio(); pintar(); msg("aviso", "Guardado", 2500);
+});
+$("btnGuardarFondos").addEventListener("click", () => {
+  ["partW","vlW","partE","vlE"].forEach((k) => G.set(k, estado[k]));
+  registrarVL("histW", estado.vlW, "partW"); registrarVL("histE", estado.vlE, "partE");
+  pintar(); msg("aviso", "Saldos guardados", 2500);
+});
+
+function anotarPeso() {
+  const w = vWorld(), e = vEmerg();
+  if (w + e <= 0) return;
+  const s = estado.seriePeso.filter((x) => x.fecha !== hoy());
+  s.push({ fecha: hoy(), v: +((e / (w + e)) * 100).toFixed(1) });
+  estado.seriePeso = s.slice(-36); G.set("seriePeso", estado.seriePeso);
+}
+
+$("btnAnotarMetal").addEventListener("click", () => {
+  const c = calcMetal(); if (!c) return;
+  sumarUnidades("onzOro", c.eOro, num(estado.oro));
+  sumarUnidades("onzPlata", c.ePlata, num(estado.plata));
+  $("impMetal").value = "";
+  pintar(); msg("aviso", "Aportación convertida a onzas", 2500);
+});
+
+$("btnAnotarFondo").addEventListener("click", () => {
+  const c = calcFondo(); if (!c || !c.a) return;
+  if (!num(estado.vlW) || !num(estado.vlE)) { msg("error", "Escribe antes los valores liquidativos."); return; }
+  sumarUnidades("partW", c.aWorld, num(estado.vlW));
+  sumarUnidades("partE", c.aEm, num(estado.vlE));
+  $("impFondo").value = "";
+  anotarPeso(); pintar(); msg("aviso", "Aportación convertida a participaciones", 2500);
+});
+
+$("btnGuardarRF").addEventListener("click", () => {
+  ["partRF","vlRF"].forEach((k) => G.set(k, estado[k]));
+  registrarVL("histRF", estado.vlRF, "partRF");
+  pintar(); msg("aviso", "Guardado", 2500);
+});
+$("btnAnotarRF").addEventListener("click", () => {
+  const a = num($("impRF").value); if (a <= 0) return;
+  if (!num(estado.vlRF)) { msg("error", "Escribe antes el valor liquidativo."); return; }
+  sumarUnidades("partRF", a, num(estado.vlRF));
+  $("impRF").value = "";
+  pintar(); msg("aviso", "Aportación convertida a participaciones", 2500);
+});
+
+$("btnAnotarGlobal").addEventListener("click", () => {
+  const g = calcGlobal(); if (!g) return;
+  sumarUnidades("onzOro", g.mOro, num(estado.oro));
+  sumarUnidades("onzPlata", g.mPlata, num(estado.plata));
+  sumarUnidades("partW", g.fWorld, num(estado.vlW));
+  sumarUnidades("partE", g.fEm, num(estado.vlE));
+  sumarUnidades("partRF", g.aRF, num(estado.vlRF));
+  $("impTotal").value = "";
+  anotarPeso(); pintar(); msg("aviso", "Aportación repartida y sumada", 2500);
+});
+
+function sincronizarFiltro() {
+  document.querySelectorAll(".fDesde").forEach((el) => (el.value = estado.fDesde));
+  document.querySelectorAll(".fHasta").forEach((el) => (el.value = estado.fHasta));
+}
+document.querySelectorAll(".fDesde, .fHasta").forEach((el) => {
+  el.addEventListener("change", () => {
+    const k = el.classList.contains("fDesde") ? "fDesde" : "fHasta";
+    estado[k] = el.value; G.set(k, estado[k]); sincronizarFiltro(); pintar();
+  });
+});
+
+document.querySelectorAll("[data-modo]").forEach((b) => {
+  b.addEventListener("click", () => {
+    estado.modoEvo = b.dataset.modo; G.set("modoEvo", estado.modoEvo); pintar();
+  });
+});
+
+[["btnEvoF","evoF"],["btnEvoRF","evoRF"]].forEach(([b, panel]) => {
+  $(b).addEventListener("click", () => {
+    const cerrado = $(panel).classList.toggle("oculto");
+    $(b).textContent = cerrado ? "＋ Ver evolución" : "− Ocultar evolución";
+    pintar();
+  });
+});
+
+/* ---------- Ajustes ---------- */
+const RUEDA = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>';
+$("btnCfg").innerHTML = RUEDA;
+
+const CALC = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><rect x="4" y="2.5" width="16" height="19" rx="2"/><line x1="7.5" y1="7" x2="16.5" y2="7"/><line x1="8" y1="11.5" x2="8" y2="11.5"/><line x1="12" y1="11.5" x2="12" y2="11.5"/><line x1="16" y1="11.5" x2="16" y2="11.5"/><line x1="8" y1="15.5" x2="8" y2="15.5"/><line x1="12" y1="15.5" x2="12" y2="15.5"/><line x1="16" y1="15.5" x2="16" y2="18.5"/><line x1="8" y1="18.5" x2="12" y2="18.5"/></svg>';
+$("btnCalc").innerHTML = CALC;
+
+const LISTA = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 12a8.5 8.5 0 1 0 2.5-6"/><polyline points="3 3.5 3.5 7.5 7.5 7"/><polyline points="12 7.5 12 12 15 14"/></svg>';
+function pintarIconoHist() {
+  const n = pendientes().length;
+  $("btnHist").innerHTML = LISTA + (n > 0 ? '<span class="punto"></span>' : "");
+  $("btnHist").setAttribute("aria-label", n > 0 ? "Registro · " + n + " sin confirmar" : "Registro");
+}
+
+function abrirHoja(id, abrir) {
+  $(id).classList.toggle("oculto", !abrir);
+  const alguna = ["tab-cfg", "tab-plazo", "tab-hist"].some((x) => !$(x).classList.contains("oculto"));
+  $("velo").classList.toggle("oculto", !alguna);
+  document.body.style.overflow = alguna ? "hidden" : "";
+  if (abrir) { $(id).scrollTop = 0; if (id === "tab-cfg") { pintarSerie(); pintarApariencia(); } if (id === "tab-hist") pintarRegistro(); pintar(); }
+}
+$("cfgNav").addEventListener("click", (ev) => {
+  const b = ev.target.closest("[data-cfg]"); if (!b) return;
+  document.querySelectorAll("#cfgNav button").forEach((x) => x.classList.toggle("on", x === b));
+  $("cfg-apariencia").classList.toggle("oculto", b.dataset.cfg !== "apariencia");
+  $("cfg-fondos").classList.toggle("oculto", b.dataset.cfg !== "fondos");
+  $("tab-cfg").scrollTop = 0;
+});
+
+$("btnCfg").addEventListener("click", () => abrirHoja("tab-cfg", true));
+$("btnCerrarCfg").addEventListener("click", () => abrirHoja("tab-cfg", false));
+$("btnCalc").addEventListener("click", () => abrirHoja("tab-plazo", true));
+$("btnHist").addEventListener("click", () => abrirHoja("tab-hist", true));
+$("btnCerrarHist").addEventListener("click", () => abrirHoja("tab-hist", false));
+$("btnCerrarPlazo").addEventListener("click", () => abrirHoja("tab-plazo", false));
+$("velo").addEventListener("click", () => { ["tab-cfg", "tab-plazo", "tab-hist"].forEach((x) => abrirHoja(x, false)); });
+
+[["cNomW","nomW"],["cNomE","nomE"],["cNomRF","nomRF"],["cObjEm","objEm"],["cBmin","bmin"],["cBmax","bmax"]].forEach(([id, k]) => {
+  $(id).value = estado.cfg[k] == null ? "" : estado.cfg[k];
+  $(id).addEventListener("input", () => { estado.cfg[k] = $(id).value; G.set("cfg", estado.cfg); pintarNombres(); pintar(); });
+});
+$("btnPuesta").addEventListener("click", () => {
+  const pares = [
+    ["iOro", "onzOro", num(estado.oro), "oro"],
+    ["iPlata", "onzPlata", num(estado.plata), "plata"],
+    ["iW", "partW", num($("iVlW").value), nombre("w")],
+    ["iE", "partE", num($("iVlE").value), nombre("e")],
+    ["iRF", "partRF", num($("iVlRF").value), nombre("rf")],
+  ];
+  const hechos = [], faltan = [];
+  pares.forEach(([idVal, clave, precio, etiqueta]) => {
+    const valor = num($(idVal).value);
+    if (valor <= 0) return;
+    if (precio <= 0) { faltan.push(etiqueta); return; }
+    estado[clave] = +(valor / precio).toFixed(6);
+    G.set(clave, estado[clave]);
+    if ($(clave)) $(clave).value = estado[clave];
+    hechos.push(etiqueta);
+  });
+  [["iVlW", "vlW"], ["iVlE", "vlE"], ["iVlRF", "vlRF"]].forEach(([id, k]) => {
+    const v = num($(id).value);
+    if (v > 0) { estado[k] = $(id).value; G.set(k, estado[k]); if ($(k)) $(k).value = estado[k]; }
+  });
+  $("iResultado").textContent = (hechos.length ? "Guardado: " + hechos.join(", ") + ". " : "") +
+    (faltan.length ? "Falta el precio o el VL de: " + faltan.join(", ") + "." : "");
+  pintar();
+});
+
+$("cPrevio").value = estado.cfg.previo == null ? "" : estado.cfg.previo;
+$("cPrevio").addEventListener("input", () => {
+  estado.cfg.previo = $("cPrevio").value; G.set("cfg", estado.cfg); pintar();
+});
+$("cObjMet").value = estado.objMetales;
+$("cObjMet").addEventListener("input", () => {
+  estado.objMetales = num($("cObjMet").value); G.set("objMetales", estado.objMetales);
+  $("objMetales").value = $("cObjMet").value; pintar();
+});
+$("cObjRF").value = estado.objRF;
+$("cObjRF").addEventListener("input", () => {
+  estado.objRF = num($("cObjRF").value); G.set("objRF", estado.objRF);
+  $("objRF").value = $("cObjRF").value; pintar();
+});
+
+function pintarNombres() {
+  document.querySelectorAll("[data-nom]").forEach((el) => { el.textContent = nombre(el.dataset.nom); });
+  $("iLabW").textContent = nombre("w");
+  $("iLabE").textContent = nombre("e");
+  $("iLabRF").textContent = nombre("rf");
+  [["cSerie", 0], ["impSerie", 0]].forEach(([id]) => {
+    const op = $(id).options;
+    op[0].textContent = nombre("w"); op[1].textContent = nombre("e"); op[2].textContent = nombre("rf");
+  });
+}
+
+$("btnAddHist").addEventListener("click", () => {
+  const k = $("cSerie").value, f = $("cFecha").value, v = num($("cValor").value);
+  if (!f || v <= 0) { msg("error", "Pon una fecha y un valor.", 3000); return; }
+  let p;
+  if (k !== "serieRatio") {
+    const pp = num($("cPart").value), din = num($("cDinero").value);
+    if (pp > 0) p = +pp.toFixed(6);
+    else if (din > 0) p = +(din / v).toFixed(6);
+  }
+  const s = (estado[k] || []).filter((x) => x.fecha !== f);
+  s.push(p != null ? { fecha: f, v: +v.toFixed(4), p: p } : { fecha: f, v: +v.toFixed(4) });
+  s.sort((a, b) => a.fecha.localeCompare(b.fecha));
+  estado[k] = s.slice(-200); G.set(k, estado[k]);
+  $("cValor").value = ""; $("cPart").value = ""; $("cDinero").value = "";
+  pintarSerie(); pintar(); msg("aviso", "Añadido al histórico", 2500);
+});
+
+$("cSerie").addEventListener("change", pintarSerie);
+
+function pintarSerie() {
+  const k = $("cSerie").value, s = (estado[k] || []).slice().reverse();
+  const esFondo = k !== "serieRatio";
+  $("cPos").classList.toggle("oculto", !esFondo);
+  $("cPosNota").textContent = esFondo
+    ? "Opcional: lo que tenías en esa fecha. Con esto la curva de «mi dinero» sale exacta; si lo dejas vacío se estima."
+    : "";
+  $("listaSerie").innerHTML = s.length
+    ? '<p class="etiq" style="margin-bottom:8px">' + s.length + ' anotaciones</p>' + s.slice(0, 12).map((x) =>
+        '<div class="lin" style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--borde)">' +
+        '<span class="fec" style="font-family:\'IBM Plex Mono\',monospace;font-size:12px;color:var(--suave)">' + x.fecha + "</span>" +
+        '<span style="font-family:\'IBM Plex Mono\',monospace;font-size:13px">' + x.v +
+        (x.p != null ? '<span style="color:var(--tenue)"> · ' + x.p + " part.</span>" : "") + "</span>" +
+        '<button data-del="' + x.fecha + '" style="width:auto;padding:4px 9px;font-size:10px;letter-spacing:.06em">Quitar</button></div>').join("")
+    : '<p class="nota">Sin anotaciones todavía.</p>';
+}
+
+$("listaSerie").addEventListener("click", (ev) => {
+  const b = ev.target.closest("[data-del]");
+  if (!b) return;
+  const k = $("cSerie").value;
+  estado[k] = (estado[k] || []).filter((x) => x.fecha !== b.dataset.del);
+  G.set(k, estado[k]); pintarSerie(); pintar();
+});
+
+function parsearFecha(t) {
+  t = t.trim();
+  let m = t.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (m) return m[1] + "-" + m[2] + "-" + m[3];
+  m = t.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{2,4})/);
+  if (m) {
+    const a = m[3].length === 2 ? "20" + m[3] : m[3];
+    return a + "-" + m[2].padStart(2, "0") + "-" + m[1].padStart(2, "0");
+  }
+  return null;
+}
+function parsearNum(t) {
+  if (t == null) return NaN;
+  let s = String(t).trim().replace(/[€\s]/g, "");
+  if (s.indexOf(",") > -1 && s.indexOf(".") > -1) s = s.replace(/\./g, "").replace(",", ".");
+  else if (s.indexOf(",") > -1) s = s.replace(",", ".");
+  return parseFloat(s);
+}
+
+$("btnImportar").addEventListener("click", () => {
+  const k = $("impSerie").value;
+  const lineas = $("impTexto").value.split("\n").map((l) => l.trim()).filter(Boolean);
+  let ok = 0, fallos = 0;
+  const s = (estado[k] || []).slice();
+  lineas.forEach((l) => {
+    const t = l.split(/[;\t,]+/).map((x) => x.trim()).filter(Boolean);
+    const f = parsearFecha(t[0]);
+    const v = parsearNum(t[1]);
+    const p = t.length > 2 ? parsearNum(t[2]) : NaN;
+    if (!f || !isFinite(v) || v <= 0) { fallos++; return; }
+    const i = s.findIndex((x) => x.fecha === f);
+    const reg = isFinite(p) && p > 0 ? { fecha: f, v: +v.toFixed(4), p: +p.toFixed(6) } : { fecha: f, v: +v.toFixed(4) };
+    if (i > -1) s[i] = reg; else s.push(reg);
+    ok++;
+  });
+  s.sort((a, b) => a.fecha.localeCompare(b.fecha));
+  estado[k] = s.slice(-400); G.set(k, estado[k]);
+  $("impResultado").textContent = ok + " anotaciones importadas" + (fallos ? " · " + fallos + " líneas no entendidas" : "") + ".";
+  $("impTexto").value = "";
+  pintarSerie(); pintar();
+});
+
+const CLAVES = ["tema","tono","acentos","cfg","oro","plata","onzOro","onzPlata","partW","vlW","partE","vlE",
+  "partRF","vlRF","histW","histE","histRF","serieRatio","seriePeso","registro","plan","proy",
+  "objMetales","objRF","modoEvo","fDesde","fHasta","fechaPrecios","oculto"];
+
+function reunirDatos() {
+  const d = { app: "mi-cartera", version: 1, fecha: new Date().toISOString(), datos: {} };
+  CLAVES.forEach((k) => { const v = G.get(k, null); if (v !== null && v !== undefined) d.datos[k] = v; });
+  return JSON.stringify(d, null, 2);
+}
+
+$("btnExportar").addEventListener("click", () => {
+  try {
+    descargar(reunirDatos(), "mi-cartera-" + hoy() + ".json", "application/json");
+    $("copiaResultado").textContent = "Archivo generado. Guárdalo donde no lo pierdas.";
+  } catch (e) {
+    $("copiaResultado").textContent = "No se ha podido descargar. Usa «Copiar al portapapeles».";
+  }
+});
+
+$("btnCopiar").addEventListener("click", async () => {
+  const t = reunirDatos();
+  try {
+    await navigator.clipboard.writeText(t);
+    $("copiaResultado").textContent = "Copiado. Pégalo en una nota y guárdalo.";
+  } catch (e) {
+    $("impDatos").value = t;
+    $("copiaResultado").textContent = "No he podido copiarlo solo: está en el recuadro de abajo, cópialo desde ahí.";
+  }
+});
+
+function descargar(texto, nombre, tipo) {
+  const blob = new Blob(["\ufeff" + texto], { type: tipo });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = nombre;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+}
+
+function csvNum(n) { return String(n == null ? "" : n).replace(".", ","); }
+
+function construirCsv() {
+  const L = [];
+  L.push("POSICIONES");
+  L.push("Activo;Cantidad;Precio o VL;Valor en euros");
+  L.push("Oro;" + csvNum(num(estado.onzOro)) + ";" + csvNum(num(estado.oro)) + ";" + csvNum(vOro().toFixed(2)));
+  L.push("Plata;" + csvNum(num(estado.onzPlata)) + ";" + csvNum(num(estado.plata)) + ";" + csvNum(vPlata().toFixed(2)));
+  L.push(nombre("w") + ";" + csvNum(num(estado.partW)) + ";" + csvNum(num(estado.vlW)) + ";" + csvNum(vWorld().toFixed(2)));
+  L.push(nombre("e") + ";" + csvNum(num(estado.partE)) + ";" + csvNum(num(estado.vlE)) + ";" + csvNum(vEmerg().toFixed(2)));
+  L.push(nombre("rf") + ";" + csvNum(num(estado.partRF)) + ";" + csvNum(num(estado.vlRF)) + ";" + csvNum(vRF().toFixed(2)));
+  L.push("");
+
+  L.push("APORTACIONES");
+  L.push("Fecha;Estado;Metales;Renta fija;Renta variable;Total");
+  estado.registro.slice().sort((a, b) => a.fecha.localeCompare(b.fecha)).forEach((a) => {
+    const t = num(a.met) + num(a.rf) + num(a.rv);
+    L.push([a.fecha, a.estado, csvNum(num(a.met)), csvNum(num(a.rf)), csvNum(num(a.rv)), csvNum(t.toFixed(2))].join(";"));
+  });
+  L.push("");
+
+  L.push("HISTORICOS");
+  L.push("Serie;Fecha;Valor;Participaciones");
+  [["histW", nombre("w")], ["histE", nombre("e")], ["histRF", nombre("rf")], ["serieRatio", "Ratio oro/plata"]].forEach(([k, n]) => {
+    (estado[k] || []).forEach((x) => L.push([n, x.fecha, csvNum(x.v), x.p != null ? csvNum(x.p) : ""].join(";")));
+  });
+  L.push("");
+
+  L.push("RESUMEN");
+  const R = calcResumen();
+  L.push("Concepto;Valor");
+  L.push("Invertido;" + csvNum(invertido().toFixed(2)));
+  L.push("Valor total;" + csvNum(R ? R.total.toFixed(2) : 0));
+  if (R) L.push("Ganancia;" + csvNum((R.total - invertido()).toFixed(2)));
+  return L.join("\n");
+}
+
+$("btnCsv").addEventListener("click", () => {
+  try {
+    descargar(construirCsv(), "mi-cartera-" + hoy() + ".csv", "text/csv;charset=utf-8");
+    $("copiaResultado").textContent = "CSV generado. Ábrelo con Excel o Numbers.";
+  } catch (e) {
+    $("copiaResultado").textContent = "No se ha podido generar el CSV.";
+  }
+});
+
+$("btnRestaurar").addEventListener("click", () => {
+  const t = $("impDatos").value.trim();
+  if (!t) { $("copiaResultado").textContent = "Pega antes el contenido de la copia."; return; }
+  let d;
+  try { d = JSON.parse(t); } catch (e) { $("copiaResultado").textContent = "El texto no es una copia válida."; return; }
+  const datos = d && d.datos ? d.datos : d;
+  if (!datos || typeof datos !== "object") { $("copiaResultado").textContent = "El texto no es una copia válida."; return; }
+  if (!confirm("Se sustituirán los datos actuales por los de la copia. ¿Seguir?")) return;
+  let n = 0;
+  CLAVES.forEach((k) => { if (k in datos) { G.set(k, datos[k]); n++; } });
+  $("copiaResultado").textContent = n + " apartados restaurados. Recargando…";
+  setTimeout(() => location.reload(), 900);
+});
+
+$("btnReset").addEventListener("click", () => {
+  if (!confirm("¿Seguro? Se borra todo lo guardado en este dispositivo.")) return;
+  try { localStorage.clear(); } catch (e) {}
+  location.reload();
+});
+
+/* ---------- Registro de aportaciones ---------- */
+const mesDe = (f) => f.slice(0, 7);
+const nuevoId = () => "a" + Date.now() + Math.floor(Math.random() * 1000);
+
+function guardarPlan() { G.set("plan", estado.plan); }
+function guardarRegistro() { G.set("registro", estado.registro); }
+
+/* Crea las anotaciones pendientes de los meses ya vencidos */
+function generarPendientes() {
+  const p = estado.plan;
+  if (!p.activo) return;
+  const dia = Math.min(Math.max(Math.round(num(p.dia)) || 1, 1), 28);
+  const hoyD = new Date();
+  let cursor = new Date(hoyD.getFullYear(), hoyD.getMonth() - 11, 1);
+  if (p.ultimo) {
+    const [ay, am] = p.ultimo.split("-").map(Number);
+    cursor = new Date(ay, am - 1, 1);
+  }
+  let cambios = false;
+  while (cursor <= hoyD) {
+    const f = new Date(cursor.getFullYear(), cursor.getMonth(), dia);
+    if (f <= hoyD) {
+      const iso = f.getFullYear() + "-" + String(f.getMonth() + 1).padStart(2, "0") + "-" + String(dia).padStart(2, "0");
+      if (!estado.registro.some((x) => x.fecha === iso && x.auto)) {
+        estado.registro.push({ id: nuevoId(), fecha: iso, met: num(p.met), rf: num(p.rf), rv: num(p.rv), estado: "pendiente", auto: true });
+        cambios = true;
+      }
+    }
+    cursor = new Date(cursor.getFullYear(), cursor.getMonth() + 1, 1);
+  }
+  const mesActual = hoyD.getFullYear() + "-" + String(hoyD.getMonth() + 1).padStart(2, "0");
+  if (p.ultimo !== mesActual) { p.ultimo = mesActual; guardarPlan(); }
+  if (cambios) { estado.registro.sort((a, b) => a.fecha.localeCompare(b.fecha)); guardarRegistro(); }
+}
+
+/* Confirmar: reparte los importes entre los saldos reales */
+function confirmarApunte(id) {
+  const ap = estado.registro.find((x) => x.id === id);
+  if (!ap || ap.estado === "hecha") return;
+  const r = ratioActual();
+  if (ap.met > 0) {
+    const pp = r ? repartoPlata(r) : 25;
+    sumarUnidades("onzPlata", (ap.met * pp) / 100, num(estado.plata));
+    sumarUnidades("onzOro", ap.met * (1 - pp / 100), num(estado.oro));
+  }
+  if (ap.rf > 0) sumarUnidades("partRF", ap.rf, num(estado.vlRF));
+  if (ap.rv > 0) {
+    const w = vWorld(), e = vEmerg();
+    const aEm = Math.min(Math.max((objEm() / 100) * (w + e + ap.rv) - e, 0), ap.rv);
+    sumarUnidades("partE", aEm, num(estado.vlE));
+    sumarUnidades("partW", ap.rv - aEm, num(estado.vlW));
+  }
+  ap.estado = "hecha";
+  guardarRegistro(); anotarPeso(); pintar(); msg("aviso", "Aportación confirmada y sumada", 2500);
+}
+
+function pintarRegistro() {
+  const cont = $("listaHist");
+  const lista = estado.registro.slice().sort((a, b) => b.fecha.localeCompare(a.fecha));
+  if (!lista.length) {
+    cont.innerHTML = '<div class="vacio">Todavía no hay aportaciones anotadas.</div>';
+  } else {
+    cont.innerHTML = lista.map((a) => {
+      const tot = num(a.met) + num(a.rf) + num(a.rv);
+      const badge = a.estado === "hecha" ? '<span class="badge b-hecha">Hecha</span>'
+                  : a.estado === "omitida" ? '<span class="badge b-omit">Omitida</span>'
+                  : '<span class="badge b-pend">Pendiente</span>';
+      const abierto = a.id === editando;
+      let campos = "";
+      if (abierto) {
+        campos = '<div class="grid" style="margin-top:12px">' +
+          '<label><span class="etiq">Metales €</span><input data-ed="met" data-id="' + a.id + '" inputmode="decimal" value="' + a.met + '"></label>' +
+          '<label><span class="etiq">R. fija €</span><input data-ed="rf" data-id="' + a.id + '" inputmode="decimal" value="' + a.rf + '"></label>' +
+          '</div><div class="grid" style="margin-top:12px">' +
+          '<label><span class="etiq">R. variable €</span><input data-ed="rv" data-id="' + a.id + '" inputmode="decimal" value="' + a.rv + '"></label>' +
+          '<label><span class="etiq">Fecha</span><input data-ed="fecha" data-id="' + a.id + '" type="date" value="' + a.fecha + '"></label>' +
+          '</div><div class="acciones">' +
+          (a.estado !== "hecha" ? '<button data-acc="confirmar" data-id="' + a.id + '">Confirmar</button>' : "") +
+          (a.estado === "pendiente" ? '<button data-acc="omitir" data-id="' + a.id + '">Omitir</button>' : "") +
+          '<button data-acc="borrar" data-id="' + a.id + '">Borrar</button>' +
+          '<button data-acc="cerrar" data-id="' + a.id + '">Cerrar</button></div>';
+      }
+      return '<div class="apunte"><div class="lin" data-abrir="' + a.id + '">' +
+        '<div><div class="fec">' + a.fecha + "</div>" +
+        '<div class="imp">' + eur(tot) + "</div></div>" + badge + "</div>" + campos + "</div>";
+    }).join("");
+  }
+
+  const hechas = estado.registro.filter((a) => a.estado === "hecha");
+  const total = hechas.reduce((s, a) => s + num(a.met) + num(a.rf) + num(a.rv), 0);
+  $("hTotal").textContent = eur(total);
+  const pend = estado.registro.filter((a) => a.estado === "pendiente").length;
+  $("hResumen").textContent = hechas.length + " aportaciones confirmadas" + (pend ? " · " + pend + " pendientes de revisar" : "") + ".";
+}
+
+let editando = null;
+
+$("listaHist").addEventListener("click", (ev) => {
+  const acc = ev.target.closest("[data-acc]");
+  if (acc) {
+    const id = acc.dataset.id;
+    if (acc.dataset.acc === "confirmar") { confirmarApunte(id); editando = null; }
+    if (acc.dataset.acc === "omitir") {
+      const a = estado.registro.find((x) => x.id === id); if (a) a.estado = "omitida";
+      guardarRegistro(); editando = null;
+    }
+    if (acc.dataset.acc === "borrar") {
+      estado.registro = estado.registro.filter((x) => x.id !== id); guardarRegistro(); editando = null;
+    }
+    if (acc.dataset.acc === "cerrar") editando = null;
+    pintarRegistro(); pintar(); return;
+  }
+  const abrir = ev.target.closest("[data-abrir]");
+  if (abrir) { editando = editando === abrir.dataset.abrir ? null : abrir.dataset.abrir; pintarRegistro(); }
+});
+
+$("listaHist").addEventListener("input", (ev) => {
+  const el = ev.target.closest("[data-ed]");
+  if (!el) return;
+  const a = estado.registro.find((x) => x.id === el.dataset.id);
+  if (!a) return;
+  a[el.dataset.ed] = el.dataset.ed === "fecha" ? el.value : num(el.value);
+  guardarRegistro();
+});
+
+$("btnNueva").addEventListener("click", () => {
+  const a = { id: nuevoId(), fecha: hoy(), met: num(estado.plan.met), rf: num(estado.plan.rf), rv: num(estado.plan.rv), estado: "pendiente", auto: false };
+  estado.registro.push(a); guardarRegistro(); editando = a.id; pintarRegistro();
+});
+
+[["planDia","dia"],["planMet","met"],["planRF","rf"],["planRV","rv"]].forEach(([id, k]) => {
+  $(id).value = estado.plan[k];
+  $(id).addEventListener("input", () => { estado.plan[k] = $(id).value; guardarPlan(); });
+});
+$("planActivo").checked = !!estado.plan.activo;
+$("planActivo").parentElement.parentElement.classList.toggle("apagado", !estado.plan.activo);
+$("planActivo").addEventListener("change", () => {
+  estado.plan.activo = $("planActivo").checked;
+  if (estado.plan.activo && !estado.plan.ultimo) {
+    const d = new Date();
+    estado.plan.ultimo = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0");
+  }
+  guardarPlan();
+  $("planActivo").parentElement.parentElement.classList.toggle("apagado", !estado.plan.activo);
+  generarPendientes(); pintarRegistro();
+});
+
+function pendientes() { return estado.registro.filter((a) => a.estado === "pendiente"); }
+
+let alertaCerrada = false;
+function pintarAlerta() {
+  const p = pendientes();
+  const mostrar = p.length > 0 && !alertaCerrada;
+  $("alertaPend").classList.toggle("oculto", !mostrar);
+  if (!mostrar) return;
+  const total = p.reduce((s, a) => s + num(a.met) + num(a.rf) + num(a.rv), 0);
+  const fechas = p.map((a) => a.fecha).sort();
+  $("alertaTxt").textContent = p.length === 1
+    ? "Tienes la del " + fechas[0] + " sin confirmar (" + eur(total) + "). Revísala para que no se te pase."
+    : "Tienes " + p.length + " sin confirmar, desde el " + fechas[0] + " (" + eur(total) + " en total).";
+}
+
+$("btnCerrarAlerta").addEventListener("click", () => { alertaCerrada = true; pintarAlerta(); });
+$("btnIrPend").addEventListener("click", () => {
+  abrirHoja("tab-hist", true);
+  alertaCerrada = true; pintarAlerta();
+});
+
+/* ---------- Cálculos ---------- */
+const vOro = () => num(estado.onzOro) * num(estado.oro);
+const vPlata = () => num(estado.onzPlata) * num(estado.plata);
+const vWorld = () => num(estado.partW) * num(estado.vlW);
+const vEmerg = () => num(estado.partE) * num(estado.vlE);
+const vRF = () => num(estado.partRF) * num(estado.vlRF);
+
+/* Anota el valor liquidativo con su fecha, uno por dia */
+function registrarVL(histKey, vl, partKey) {
+  const v = num(vl);
+  if (v <= 0) return;
+  const s = estado[histKey].filter((x) => x.fecha !== hoy());
+  s.push({ fecha: hoy(), v: +v.toFixed(4), p: partKey ? num(estado[partKey]) : undefined });
+  s.sort((a, b) => a.fecha.localeCompare(b.fecha));
+  estado[histKey] = s.slice(-120);
+  G.set(histKey, estado[histKey]);
+}
+
+/* Serie a dibujar: valor liquidativo o dinero propio */
+function serieModo(histKey, partKey) {
+  const s = estado[histKey] || [];
+  if (estado.modoEvo !== "eur") return s;
+  const actual = num(estado[partKey]);
+  return s.map((x) => ({ fecha: x.fecha, v: +(x.v * (x.p != null && x.p > 0 ? x.p : actual)).toFixed(2) }));
+}
+
+/* Recorta la serie al rango de fechas elegido */
+function filtrar(s) {
+  const d = estado.fDesde, f = estado.fHasta;
+  return s.filter((x) => (!d || x.fecha >= d) && (!f || x.fecha <= f));
+}
+
+/* Ganancia entre el primer y el último punto */
+function resultado(s) {
+  if (!s || s.length < 2) return null;
+  const a = s[0].v, b = s[s.length - 1].v;
+  if (!a) return null;
+  return { abs: b - a, pct: ((b - a) / a) * 100, desde: s[0].fecha, hasta: s[s.length - 1].fecha };
+}
+
+function pintarResultado(id, s) {
+  const r = resultado(s), el = $(id);
+  if (!r) { el.textContent = ""; el.className = "result"; return; }
+  const signo = r.pct >= 0 ? "+" : "";
+  el.className = "result " + (r.pct >= 0 ? "pos" : "neg");
+  el.innerHTML = signo + eur(r.abs) + " &nbsp; " + signo + r.pct.toFixed(2) + "%" +
+    '<small>del ' + r.desde + " al " + r.hasta + "</small>";
+}
+
+function variacion(histKey) {
+  const s = estado[histKey];
+  if (!s || s.length < 2) return null;
+  const ult = s[s.length - 1], prev = s[s.length - 2];
+  if (!prev.v) return null;
+  return { pct: ((ult.v - prev.v) / prev.v) * 100, desde: prev.fecha };
+}
+
+function textoVar(histKey, nombre) {
+  const c = variacion(histKey);
+  if (!c) return nombre + " sin histórico todavía";
+  const signo = c.pct >= 0 ? "+" : "";
+  return nombre + " " + signo + c.pct.toFixed(2) + "% desde el " + c.desde.slice(8) + "/" + c.desde.slice(5, 7);
+}
+
+/* Convierte euros en unidades al precio actual */
+function aUnidades(euros, precio) { return precio > 0 ? euros / precio : 0; }
+function sumarUnidades(clave, euros, precio) {
+  const u = aUnidades(euros, precio);
+  if (u <= 0) return false;
+  estado[clave] = +(num(estado[clave]) + u).toFixed(6);
+  $(clave).value = estado[clave]; G.set(clave, estado[clave]);
+  return true;
+}
+
+/* Conversión desde la versión anterior, que guardaba euros */
+function migrar() {
+  const par = [["saldoOro","onzOro","oro"],["saldoPlata","onzPlata","plata"],
+               ["world","partW","vlW"],["emerg","partE","vlE"],["saldoRF","partRF","vlRF"]];
+  let hecho = false;
+  par.forEach(([viejo, nuevo, precioClave]) => {
+    const e = num(G.get(viejo, 0)), p = num(estado[precioClave]);
+    if (e > 0 && !num(estado[nuevo]) && p > 0) {
+      estado[nuevo] = +(e / p).toFixed(6);
+      G.set(nuevo, estado[nuevo]); G.set(viejo, "");
+      if ($(nuevo)) $(nuevo).value = estado[nuevo];
+      hecho = true;
+    }
+  });
+  if (hecho) msg("aviso", "Saldos convertidos a cantidades", 4000);
+}
+
+function ratioActual() { const o = num(estado.oro), p = num(estado.plata); return o && p ? o / p : null; }
+
+function calcMetal() {
+  const r = ratioActual(), a = num($("impMetal").value);
+  if (!r || a <= 0) return null;
+  const pp = repartoPlata(r), po = 100 - pp;
+  return { r, a, po, pp, eOro: (a * po) / 100, ePlata: (a * pp) / 100 };
+}
+
+function calcFondo() {
+  const w = vWorld(), e = vEmerg(), a = num($("impFondo").value);
+  const total = w + e;
+  if (total <= 0) return null;
+  const peso = (e / total) * 100;
+  let aEm = 0;
+  if (a > 0) aEm = Math.min(Math.max((objEm() / 100) * (total + a) - e, 0), a);
+  const aWorld = a - aEm;
+  const despues = a > 0 ? ((e + aEm) / (total + a)) * 100 : peso;
+  let traspaso = null;
+  if (peso > bMax()) traspaso = { desde: "Emergentes", hacia: "MSCI World", imp: e - (objEm() / 100) * total };
+  else if (peso < bMin()) traspaso = { desde: "MSCI World", hacia: "Emergentes", imp: (objEm() / 100) * total - e };
+  return { w, e, a, total, peso, aEm, aWorld, despues, traspaso };
+}
+
+/* Dinero aportado: lo previo más las aportaciones confirmadas */
+function invertido() {
+  const previo = num(estado.cfg.previo);
+  const conf = estado.registro
+    .filter((a) => a.estado === "hecha")
+    .reduce((s, a) => s + num(a.met) + num(a.rf) + num(a.rv), 0);
+  return previo + conf;
+}
+
+function calcResumen() {
+  const so = vOro(), sp = vPlata();
+  const w = vWorld(), e = vEmerg(), rf = vRF();
+  const met = so + sp, fon = w + e, total = met + fon + rf;
+  if (total <= 0) return null;
+  return { so, sp, w, e, rf, met, fon, total };
+}
+
+function objetivos() {
+  let m = Math.min(Math.max(num(estado.objMetales), 0), 100) / 100;
+  let r = Math.min(Math.max(num(estado.objRF), 0), 100) / 100;
+  if (m + r > 1) { const s = m + r; m /= s; r /= s; }
+  return { m, r, v: Math.max(0, 1 - m - r) };
+}
+
+function calcGlobal() {
+  const R = calcResumen(), a = num($("impTotal").value);
+  if (!R || a <= 0) return null;
+  const o = objetivos();
+  const futuro = R.total + a;
+  const pesos = [o.m, o.r, o.v];
+  const actuales = [R.met, R.rf, R.fon];
+  const faltas = pesos.map((p, i) => Math.max(p * futuro - actuales[i], 0));
+  const suma = faltas.reduce((x, y) => x + y, 0);
+  let rep;
+  if (suma <= 0) rep = pesos.map((p) => a * p);
+  else if (suma <= a) { const sobra = a - suma; rep = faltas.map((f, i) => f + sobra * pesos[i]); }
+  else rep = faltas.map((f) => (a * f) / suma);
+  const [aMet, aRF, aFon] = rep;
+
+  const ra = ratioActual();
+  let mPlata = 0, mOro = 0;
+  if (aMet > 0) { const pp = ra ? repartoPlata(ra) : 25; mPlata = (aMet * pp) / 100; mOro = aMet - mPlata; }
+  let fEm = 0;
+  if (aFon > 0) fEm = Math.min(Math.max((objEm() / 100) * (R.fon + aFon) - R.e, 0), aFon);
+  return { a, aMet, aRF, aFon, mOro, mPlata, fWorld: aFon - fEm, fEm, sinRatio: !ra };
+}
+
+function calcProyeccion() {
+  const p = estado.proy;
+  const anios = Math.min(Math.max(num(p.anios), 0), 60);
+  if (anios <= 0 || (p.met === false && p.rf === false && p.rv === false)) return null;
+
+  const R = calcResumen() || { met: 0, rf: 0, fon: 0 };
+  const bloques = [];
+  if (p.met !== false) bloques.push({ ini: R.met, ap: num(p.amet), r: num(p.rmet) });
+  if (p.rf !== false) bloques.push({ ini: R.rf, ap: num(p.arf), r: num(p.rrf) });
+  if (p.rv !== false) bloques.push({ ini: R.fon, ap: num(p.arv), r: num(p.rrv) });
+  const aportMes = bloques.reduce((a, b) => a + b.ap, 0);
+
+  const infl = num(p.infl) / 100;
+  const meses = Math.round(anios * 12);
+
+  const simular = (ajuste) => {
+    const saldos = bloques.map((b) => b.ini);
+    const serie = [];
+    for (let m = 1; m <= meses; m++) {
+      bloques.forEach((b, i) => {
+        const tm = Math.pow(1 + Math.max(b.r + ajuste, -50) / 100, 1 / 12) - 1;
+        saldos[i] = saldos[i] * (1 + tm) + b.ap;
+      });
+      if (m % 12 === 0) serie.push(saldos.reduce((a, x) => a + x, 0));
+    }
+    return { final: saldos.reduce((a, x) => a + x, 0), serie: serie };
+  };
+
+  const central = simular(0), prudente = simular(-2), optimista = simular(2);
+  const inicial = bloques.reduce((a, b) => a + b.ini, 0);
+  const aportado = aportMes * meses;
+  const deflactor = Math.pow(1 + infl, anios);
+
+  return {
+    anios: anios, inicial: inicial, aportado: aportado, aportMes: aportMes,
+    central: central.final, prudente: prudente.final, optimista: optimista.final,
+    real: central.final / deflactor,
+    ganancia: central.final - inicial - aportado,
+    serieNominal: central.serie,
+    serieReal: central.serie.map((v, i) => v / Math.pow(1 + infl, i + 1)),
+  };
+}
+
+/* ---------- Gráfico SVG ---------- */
+function grafico(cont, serie, color, refs, minFijo, maxFijo) {
+  if (!serie || serie.length < 2) return;
+  const W = 320, H = 150, mx = 30, my = 12;
+  const vals = serie.map((p) => p.v);
+  const min = minFijo != null ? minFijo : Math.min.apply(null, vals) - 3;
+  const max = maxFijo != null ? maxFijo : Math.max.apply(null, vals) + 3;
+  const X = (i) => mx + (i / (serie.length - 1)) * (W - mx - 8);
+  const Y = (v) => my + (1 - (v - min) / (max - min || 1)) * (H - my * 2);
+  const css = getComputedStyle(document.body);
+  const cBorde = css.getPropertyValue("--borde"), cFuerte = css.getPropertyValue("--fuerte");
+  let s = '<svg viewBox="0 0 ' + W + ' ' + H + '" width="100%" height="150" preserveAspectRatio="none">';
+  (refs || []).forEach((r) => {
+    if (r.v < min || r.v > max) return;
+    s += '<line x1="' + mx + '" y1="' + Y(r.v) + '" x2="' + (W - 8) + '" y2="' + Y(r.v) +
+         '" stroke="' + (r.color || cFuerte) + '" stroke-dasharray="3 3" stroke-width="1"/>';
+  });
+  s += '<line x1="' + mx + '" y1="' + (H - my) + '" x2="' + (W - 8) + '" y2="' + (H - my) + '" stroke="' + cBorde + '"/>';
+  s += '<text x="2" y="' + (Y(max) + 4) + '">' + max.toFixed(0) + '</text>';
+  s += '<text x="2" y="' + (Y(min) + 4) + '">' + min.toFixed(0) + '</text>';
+  s += '<polyline fill="none" stroke="' + color + '" stroke-width="2" points="' +
+       serie.map((p, i) => X(i) + "," + Y(p.v)).join(" ") + '"/>';
+  s += '</svg><p class="nota" style="text-align:center;margin:4px 0 0">' +
+       serie[0].fecha.slice(5) + " → " + serie[serie.length - 1].fecha.slice(5) + "</p>";
+  cont.innerHTML = s;
+}
+
+function donut(cont, partes, total) {
+  const R = 54, C = 2 * Math.PI * R, S = 140;
+  const suma = partes.reduce((a, p) => a + p.v, 0);
+  let acum = 0;
+  let s = '<svg viewBox="0 0 ' + S + ' ' + S + '" width="200" height="200">';
+  const css = getComputedStyle(document.body);
+  s += '<circle cx="70" cy="70" r="' + R + '" fill="none" stroke="' + css.getPropertyValue("--borde") + '" stroke-width="16"/>';
+  partes.forEach((p) => {
+    if (p.v <= 0 || suma <= 0) return;
+    const largo = (p.v / suma) * C;
+    s += '<circle cx="70" cy="70" r="' + R + '" fill="none" stroke="' + p.color +
+         '" stroke-width="16" stroke-dasharray="' + largo + ' ' + (C - largo) +
+         '" stroke-dashoffset="' + (-acum) + '" transform="rotate(-90 70 70)"/>';
+    acum += largo;
+  });
+  s += '<text class="total" x="70" y="72" text-anchor="middle">' + total + '</text>';
+  s += '<text class="sub" x="70" y="86" text-anchor="middle">TOTAL</text>';
+  s += "</svg>";
+  cont.innerHTML = s;
+}
+
+function graficoDoble(cont, s1, s2, c1, c2, anios) {
+  if (!s1 || s1.length < 2) { cont.innerHTML = ""; return; }
+  const W = 320, H = 160, mx = 6, my = 14;
+  const max = Math.max.apply(null, s1) * 1.05, min = 0;
+  const X = (i, n) => mx + (i / (n - 1)) * (W - mx * 2);
+  const Y = (v) => my + (1 - (v - min) / (max - min || 1)) * (H - my * 2 - 12);
+  const css = getComputedStyle(document.body);
+  const linea = (s, col, ancho, guion) =>
+    '<polyline fill="none" stroke="' + col + '" stroke-width="' + ancho + '"' +
+    (guion ? ' stroke-dasharray="4 3"' : "") + ' points="' +
+    s.map((v, i) => X(i, s.length) + "," + Y(v)).join(" ") + '"/>';
+  let g = '<svg viewBox="0 0 ' + W + ' ' + H + '" width="100%" height="160" preserveAspectRatio="none">';
+  g += '<line x1="' + mx + '" y1="' + Y(0) + '" x2="' + (W - mx) + '" y2="' + Y(0) + '" stroke="' + css.getPropertyValue("--borde") + '"/>';
+  g += linea(s1, c1, 2, false) + linea(s2, c2, 2, true);
+  g += '<text x="' + mx + '" y="' + (H - 2) + '">año 1</text>';
+  g += '<text x="' + (W - mx) + '" y="' + (H - 2) + '" text-anchor="end">año ' + anios + "</text>";
+  g += "</svg>";
+  g += '<p class="nota" style="margin:6px 0 0"><span style="color:' + c1 + '">━</span> nominal &nbsp; <span style="color:' + c2 + '">┅</span> en euros de hoy</p>';
+  cont.innerHTML = g;
+}
+
+function regla(id, min, max, marcas, valor, color) {
+  const el = $(id);
+  el.querySelectorAll(".marca,.aguja").forEach((x) => x.remove());
+  marcas.forEach((m) => {
+    const d = document.createElement("div");
+    d.className = "marca"; d.style.left = ((m - min) / (max - min)) * 100 + "%";
+    d.innerHTML = "<i></i><b>" + m + "</b>";
+    el.appendChild(d);
+  });
+  if (valor != null) {
+    const p = Math.min(100, Math.max(0, ((valor - min) / (max - min)) * 100));
+    const a = document.createElement("div");
+    a.className = "aguja"; a.style.left = p + "%";
+    a.innerHTML = '<i style="background:' + color + '"></i>';
+    el.appendChild(a);
+  }
+}
+
+/* ---------- Pintar ---------- */
+function pintar() {
+  const css = getComputedStyle(document.body);
+  const cOro = css.getPropertyValue("--oro"), cPlata = css.getPropertyValue("--plata");
+  const cWorld = css.getPropertyValue("--world"), cEm = css.getPropertyValue("--em");
+  const r = ratioActual();
+
+  // --- Metales
+  $("mRatio").textContent = r ? r.toFixed(1) : "—";
+  if (r) { const t = tramo(r); $("mTramo").textContent = t[0]; $("mTramoD").textContent = t[1]; }
+  else { $("mTramo").textContent = ""; $("mTramoD").textContent = ""; }
+  regla("reglaRatio", 40, 95, [50, 70, 85], r, cPlata);
+  $("fechaPrecios").textContent = estado.fechaPrecios ? "Precios del " + estado.fechaPrecios : "";
+  $("valMetales").textContent = (num(estado.onzOro) || num(estado.onzPlata))
+    ? "Valor actual: " + eur(vOro()) + " en oro · " + eur(vPlata()) + " en plata."
+    : "Escribe cuántas onzas tienes y la app calcula el valor sola con el precio del día.";
+
+  const cm = calcMetal();
+  $("mVacio").classList.toggle("oculto", !!cm);
+  $("mCuerpo").classList.toggle("oculto", !cm);
+  if (cm) {
+    $("mbOro").style.width = cm.po + "%"; $("mbPlata").style.width = cm.pp + "%";
+    $("mpOro").textContent = cm.po.toFixed(0); $("mpPlata").textContent = cm.pp.toFixed(0);
+    $("mvOro").textContent = eur(cm.eOro); $("mvPlata").textContent = eur(cm.ePlata);
+  }
+  if (estado.serieRatio.length > 1) grafico($("graficoRatio"), estado.serieRatio, cOro, [{ v: 70 }, { v: 85, color: cPlata }]);
+
+  // --- Fondos
+  const cf = calcFondo();
+  $("fPeso").textContent = cf ? cf.peso.toFixed(1) + "%" : "—";
+  $("fEstado").textContent = cf ? (cf.traspaso ? "Fuera de banda" : "Dentro de banda") : "Sin datos";
+  $("fEstado").style.color = cf && cf.traspaso ? cEm : "var(--texto)";
+  $("fObjTxt").textContent = "Objetivo " + objEm() + "% · banda " + bMin() + "–" + bMax();
+  regla("reglaPeso", 15, 35, [bMin(), objEm(), bMax()], cf ? cf.peso : null, cEm);
+  const hayRep = cf && cf.a > 0;
+  $("fVacio").classList.toggle("oculto", !!hayRep);
+  $("fCuerpo").classList.toggle("oculto", !hayRep);
+  if (hayRep) {
+    $("fbWorld").style.width = (cf.aWorld / cf.a) * 100 + "%";
+    $("fbEm").style.width = (cf.aEm / cf.a) * 100 + "%";
+    $("fvWorld").textContent = eur(cf.aWorld); $("fvEm").textContent = eur(cf.aEm);
+    $("fDespues").textContent = "Después de aportar, emergentes queda en " + cf.despues.toFixed(1) + "%.";
+  }
+  $("fTraspaso").classList.toggle("oculto", !(cf && cf.traspaso));
+  if (cf && cf.traspaso) {
+    $("fTraspasoTxt").innerHTML = "Emergentes está en " + cf.peso.toFixed(1) +
+      "%, fuera de la banda " + bMin() + "–" + bMax() + ". Traspasa <strong>" + eur(Math.abs(cf.traspaso.imp)) +
+      "</strong> de " + cf.traspaso.desde + " a " + cf.traspaso.hacia + " para volver al 25%.";
+  }
+  if (estado.seriePeso.length > 1) grafico($("graficoPeso"), estado.seriePeso, cEm, [{ v: 20 }, { v: 25 }, { v: 30 }], 15, 35);
+
+  $("valFondos").textContent = (num(estado.partW) || num(estado.partE))
+    ? "Valor actual: " + eur(vWorld()) + " en World · " + eur(vEmerg()) + " en emergentes."
+    : "Pon las participaciones y el valor liquidativo de cada fondo (los ves en MyInvestor).";
+  $("camFondos").textContent = textoVar("histW", nombre("w")) + " · " + textoVar("histE", nombre("e")) + ".";
+  const sufijo = estado.modoEvo === "eur" ? " · mi dinero" : " · valor liquidativo";
+  document.querySelectorAll("[data-modo]").forEach((b) => b.classList.toggle("on", b.dataset.modo === estado.modoEvo));
+  $("hW").textContent = nombre("w") + sufijo;
+  $("hE").textContent = nombre("e") + sufijo;
+  $("hRF").textContent = nombre("rf") + sufijo;
+  if (!$("evoF").classList.contains("oculto")) {
+    const sW = filtrar(serieModo("histW", "partW")), sE = filtrar(serieModo("histE", "partE"));
+    grafico($("gW"), sW, cWorld, []);
+    grafico($("gE"), sE, cEm, []);
+    if (sW.length < 2) $("gW").innerHTML = '<p class="nota">Sin datos suficientes en ese rango.</p>';
+    if (sE.length < 2) $("gE").innerHTML = '<p class="nota">Sin datos suficientes en ese rango.</p>';
+    pintarResultado("rsW", sW); pintarResultado("rsE", sE);
+  }
+
+  // --- Renta fija
+  const rf = vRF();
+  $("valRF").textContent = num(estado.partRF)
+    ? "Valor actual: " + eur(rf) + "."
+    : "Pon las participaciones y el valor liquidativo del fondo.";
+  $("camRF").textContent = textoVar("histRF", nombre("rf")) + ".";
+  if (!$("evoRF").classList.contains("oculto")) {
+    const sR = filtrar(serieModo("histRF", "partRF"));
+    grafico($("gRF"), sR, css.getPropertyValue("--rf"), []);
+    if (sR.length < 2) $("gRF").innerHTML = '<p class="nota">Sin datos suficientes en ese rango.</p>';
+    pintarResultado("rsRF", sR);
+  }
+  $("rfTotal").textContent = eur(rf);
+  const o = objetivos();
+  $("objResto").textContent = "Resto en renta variable: " + (o.v * 100).toFixed(0) + "%.";
+  $("cResto").textContent = "Resto en renta variable: " + (o.v * 100).toFixed(0) + "%.";
+  $("iNotaMet").textContent = num(estado.oro) && num(estado.plata)
+    ? "Se usarán los precios de hoy: " + eur(num(estado.oro)) + " y " + eur(num(estado.plata)) + " por onza."
+    : "Trae antes los precios en la pestaña Metales.";
+
+  pintarRegistro();
+  pintarAlerta();
+  pintarIconoHist();
+
+  // --- Largo plazo
+  const P = calcProyeccion();
+  $("pVacio").classList.toggle("oculto", !!P);
+  $("pCuerpo").classList.toggle("oculto", !P);
+  const Rp = calcResumen();
+  $("pPartida").textContent = P ? "Partes de " + eur(P.inicial) + " ya invertidos y aportas " + eur(P.aportMes) + " al mes en total." : "";
+  if (P) {
+    $("pAniosTxt").textContent = P.anios;
+    $("pCentral").textContent = eur(P.central);
+    $("pRango").textContent = "Entre " + eur(P.prudente) + " y " + eur(P.optimista) + " según vaya mejor o peor (±2 puntos).";
+    $("pReal").textContent = eur(P.real);
+    $("pRealNota").textContent = "Lo que ese dinero podría comprar hoy, descontando la inflación.";
+    $("pAportado").textContent = eur(P.aportado);
+    $("pGanancia").textContent = eur(P.ganancia);
+    graficoDoble($("graficoPlazo"), P.serieNominal, P.serieReal, cWorld, css.getPropertyValue("--suave"), P.anios);
+  }
+
+  // --- Resumen
+  const R = calcResumen();
+  $("resVacio").classList.toggle("oculto", !!R);
+  $("resCuerpo").classList.toggle("oculto", !R);
+  if (R) {
+    const inv = invertido();
+    $("resInvertido").textContent = eur(inv);
+    $("resValor").textContent = eur(R.total);
+    const elG = $("resGanancia");
+    if (inv > 0) {
+      const dif = R.total - inv, pct = (dif / inv) * 100, signo = dif >= 0 ? "+" : "";
+      elG.className = "result " + (dif >= 0 ? "pos" : "neg");
+      elG.innerHTML = signo + eur(dif) + " &nbsp; " + signo + pct.toFixed(2) + "%";
+      $("resNotaInv").textContent = "";
+    } else {
+      elG.className = "result"; elG.textContent = "—";
+      $("resNotaInv").textContent = "Pon en ajustes lo que llevabas aportado y confirma las aportaciones del registro para ver la rentabilidad.";
+    }
+
+    const cRf = css.getPropertyValue("--rf");
+    donut($("donut"), [
+      { v: R.met, color: cOro }, { v: R.rf, color: cRf }, { v: R.fon, color: cWorld }
+    ], eur(R.total));
+    const pm = (R.met / R.total) * 100, prf = (R.rf / R.total) * 100, pfo = (R.fon / R.total) * 100;
+    $("pMet").textContent = pm.toFixed(0); $("pRf").textContent = prf.toFixed(0); $("pFon").textContent = pfo.toFixed(0);
+    $("vMet").textContent = eur(R.met); $("vRf").textContent = eur(R.rf); $("vFon").textContent = eur(R.fon);
+
+    const po = R.met > 0 ? (R.so / R.met) * 100 : 0;
+    $("bOro").style.width = po + "%"; $("bPlata").style.width = (100 - po) + "%";
+    $("pOroM").textContent = po.toFixed(0); $("pPlataM").textContent = (100 - po).toFixed(0);
+    $("vOroM").textContent = eur(R.so); $("vPlataM").textContent = eur(R.sp);
+    $("notaRatio").textContent = r ? "Ratio oro/plata: " + r.toFixed(1) + " · " + tramo(r)[0].toLowerCase() : "";
+
+    const pw = R.fon > 0 ? (R.w / R.fon) * 100 : 0;
+    $("bWorld").style.width = pw + "%"; $("bEm").style.width = (100 - pw) + "%";
+    $("pWorldF").textContent = pw.toFixed(0); $("pEmF").textContent = (100 - pw).toFixed(0);
+    $("vWorldF").textContent = eur(R.w); $("vEmF").textContent = eur(R.e);
+    $("notaBanda").textContent = cf && cf.traspaso ? nombre("e") + " fuera de la banda " + bMin() + "–" + bMax() + "%. Mira la pestaña Fondos." : "";
+    $("rfPeso").textContent = "Es el " + ((rf / R.total) * 100).toFixed(1) + "% de tu cartera · objetivo " + (o.r * 100).toFixed(0) + "%.";
+
+    const g = calcGlobal();
+    $("repVacio").classList.toggle("oculto", !!g);
+    $("repCuerpo").classList.toggle("oculto", !g);
+    if (g) {
+      $("rbMet").style.width = (g.aMet / g.a) * 100 + "%";
+      $("rbRf").style.width = (g.aRF / g.a) * 100 + "%";
+      $("rbFon").style.width = (g.aFon / g.a) * 100 + "%";
+      $("rOro").textContent = eur(g.mOro); $("rPlata").textContent = eur(g.mPlata);
+      $("rWorld").textContent = eur(g.fWorld); $("rEm").textContent = eur(g.fEm);
+      $("rRf").textContent = eur(g.aRF);
+      $("avisoSinRatio").textContent = g.sinRatio ? "Sin precios de oro y plata se reparte 75/25 por defecto." : "";
+    }
+  }
+}
+
+/* ---------- Icono generado ---------- */
+(function icono() {
+  try {
+    const c = document.createElement("canvas"); c.width = c.height = 180;
+    const g = c.getContext("2d");
+    g.fillStyle = "#14171B"; g.fillRect(0, 0, 180, 180);
+    const barra = (y, a, b, corte) => {
+      g.fillStyle = a; g.fillRect(28, y, 124 * corte, 26);
+      g.fillStyle = b; g.fillRect(28 + 124 * corte, y, 124 * (1 - corte), 26);
+    };
+    barra(52, "#C9A227", "#AEB6BF", 0.55);
+    barra(102, "#7C9CBF", "#C97B3C", 0.75);
+    const url = c.toDataURL("image/png");
+    ["apple-touch-icon", "icon"].forEach((rel) => {
+      const l = document.createElement("link"); l.rel = rel; l.href = url; document.head.appendChild(l);
+    });
+  } catch (e) {}
+})();
+
+migrar();
+aplicarApariencia();
+pintarApariencia();
+sincronizarFiltro();
+pintarNombres();
+pintarSerie();
+aplicarTema();
+pintarOjo();
+pintarBloques();
+generarPendientes();
+pintarRegistro();
+pintarAlerta();
+pintarIconoHist();
+pintar();
+</script>
+</body>
+</html>
