@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-Jx27QrDun64DqPVyQsmeIZjadFXtZw/93WMV07PoJ0Y=' 'sha256-lrYFNjXzlKxKU80jBi4xaZYmms6bTaJiwE0nz4IFfr0='; style-src 'unsafe-inline'; font-src data:; img-src 'self' data:; connect-src https://api.gold-api.com https://api.frankfurter.dev https://script.google.com https://script.googleusercontent.com; base-uri 'none'; form-action 'none'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-Jx27QrDun64DqPVyQsmeIZjadFXtZw/93WMV07PoJ0Y=' 'sha256-gmmdb6pqzUqeBgLLgqQ4OVROgqdWvzoZ+p5zgpFt0Zs='; style-src 'unsafe-inline'; font-src data:; img-src 'self' data:; connect-src https://api.gold-api.com https://api.frankfurter.dev https://script.google.com https://script.googleusercontent.com; base-uri 'none'; form-action 'none'; object-src 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -338,6 +338,42 @@ html.bloqueada .nov{visibility:hidden}
 @keyframes novCae{0%{opacity:1;transform:translateY(0) rotate(0)}100%{opacity:0;transform:translateY(260px) rotate(540deg)}}
 @media (prefers-reduced-motion:reduce){.novCaja,.novIco,.confeti i,.nov{animation:none!important}.novIco circle,.novIco path{stroke-dashoffset:0;animation:none}.confeti{display:none}}
 
+/* Aportar */
+.colsAp>div>.card+.card{margin-top:14px}
+.colsAp>*+*{margin-top:14px}
+#apDespues,#apPlan{margin-top:14px}
+#apMetal.oculto+#apDespues{margin-top:0}
+.repCat{display:flex;justify-content:space-between;align-items:center;margin:14px 0 2px;font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.repCat:first-child{margin-top:4px}
+.repCat b{color:var(--text);font-size:13px}
+.split{display:flex;height:34px;border-radius:12px;overflow:hidden;margin-top:12px;background:var(--card2)}
+.split div{display:flex;align-items:center;justify-content:center;min-width:0;overflow:hidden;transition:width .3s}
+.split b{font-size:12.5px;font-weight:800;color:#1B1F2E;white-space:nowrap}
+.filaPend{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:10px;font-size:14px;font-weight:600}
+.stat .sub2{display:block;font-size:12.5px;color:var(--muted);font-weight:700;margin-top:2px}
+.warnT{color:var(--warn)}
+#apRapidos button{white-space:nowrap}
+@media (min-width:1000px){
+  #v-aportar{max-width:1100px}
+  .colsAp{display:grid;grid-template-columns:1.15fr 1fr;gap:14px;align-items:start}
+  .colsAp>*+*{margin-top:0}
+}
+/* Barra de menú del móvil y el iPad vertical: fija abajo y opaca; nada se ve por debajo */
+@media (max-width:999px){
+  .nav{left:0;right:0;bottom:0;max-width:none;margin:0;border-radius:22px 22px 0 0;border-width:1px 0 0;
+    padding:7px max(8px, env(safe-area-inset-left)) calc(7px + env(safe-area-inset-bottom));background:var(--card);backdrop-filter:none;-webkit-backdrop-filter:none;
+    box-shadow:0 -8px 30px rgba(0,0,0,.25)}
+  .navbtn{font-size:10.5px;padding:7px 0 6px}
+  .main{padding-bottom:calc(96px + env(safe-area-inset-bottom))}
+  .toast{bottom:calc(92px + env(safe-area-inset-bottom))}
+}
+/* Franja de la barra de estado: tapa el contenido al hacer scroll */
+body::before{content:"";position:fixed;left:0;right:0;top:0;height:env(safe-area-inset-top);background:var(--bg);z-index:35;pointer-events:none}
+.splitLeg{display:flex;justify-content:space-between;margin-top:6px;font-size:12.5px;font-weight:700;color:var(--muted)}
+.splitLeg i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px}
+.rep .nm small{white-space:normal;line-height:1.35;margin-top:1px}
+#bqInicio{margin-top:10px}
+
 </style>
 </head>
 <body>
@@ -345,9 +381,8 @@ html.bloqueada .nov{visibility:hidden}
 <div id="bloqueo" class="bloqueo">
   <div class="bloqueoCaja">
     <img src="icono.png?v=8" alt="">
-    <h2>Mi cartera</h2>
+    <h2>Cartera</h2>
     <div id="bqInicio" class="bqPaso">
-      <p class="nota">Bloqueada</p>
       <button class="btn primario bqFace" id="btnDesbloquear"><svg viewBox="0 0 24 24"><path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2M9 9v1.5M15 9v1.5M12 9v4h-1M9.5 16c1.5 1 3.5 1 5 0"/></svg>Desbloquear con Face ID</button>
       <button class="btn bqSec" id="btnVerPin">Entrar con PIN</button>
     </div>
@@ -370,7 +405,8 @@ html.bloqueada .nov{visibility:hidden}
     <div class="marca"><img src="icono.png?v=8" alt="">Mi cartera</div>
     <button class="navbtn on" data-act="tab" data-id="inicio"><span data-ico="inicio"></span><span>Inicio</span></button>
     <button class="navbtn" data-act="tab" data-id="cartera"><span data-ico="cartera"></span><span>Cartera</span></button>
-    <button class="navbtn" data-act="tab" data-id="movs"><span data-ico="movs"></span><span>Movimientos</span><i class="badge oculto" id="navBadge"></i></button>
+    <button class="navbtn" data-act="tab" data-id="aportar"><span data-ico="aportar"></span><span>Aportar</span><i class="badge oculto" id="navBadge"></i></button>
+    <button class="navbtn" data-act="tab" data-id="movs"><span data-ico="movs"></span><span>Movimientos</span></button>
     <button class="navbtn" data-act="tab" data-id="ajustes"><span data-ico="ajustes"></span><span>Ajustes</span></button>
   </nav>
 
@@ -418,21 +454,34 @@ html.bloqueada .nov{visibility:hidden}
       <button class="btn primario" data-act="nuevaPos"><span data-ico="mas"></span>Añadir posición</button>
     </section>
 
-    <!-- ===== MOVIMIENTOS ===== -->
-    <section id="v-movs" class="vista oculto">
-      <div class="colsMov">
-        <div class="card" id="cAportar">
-          <p class="tit"><span>Aportar este mes</span><button class="link oculto" data-act="repReset" id="repReset">Recalcular</button></p>
-          <p class="nota oculto" id="apObjetivo" style="margin-bottom:10px"></p>
-          <label class="campo"><span>Cuánto aportas</span>
-            <input id="apImporte" class="grande" inputmode="decimal" placeholder="0 €" autocomplete="off"></label>
-          <div id="apLista"></div>
-          <div class="stack" id="apBarra"></div>
-          <p class="nota" id="apNota"></p>
-          <button class="btn primario" style="margin-top:14px" id="btnAnotar">Anotar aportación</button>
+    <!-- ===== APORTAR ===== -->
+    <section id="v-aportar" class="vista oculto">
+      <div id="apPend"></div>
+      <div class="colsAp">
+        <div>
+          <div class="card" id="cAportar">
+            <p class="tit"><span>¿Cuánto aportas?</span><button class="link oculto" data-act="repReset" id="repReset">Recalcular</button></p>
+            <p class="nota oculto" id="apObjetivo" style="margin-bottom:10px"></p>
+            <input id="apImporte" class="grande" inputmode="decimal" placeholder="0 €" autocomplete="off" aria-label="Importe de la aportación">
+            <div class="chips" id="apRapidos" style="margin-top:12px"></div>
+            <div class="seg" id="segModoRep" style="margin-top:14px">
+              <button data-act="modoRep" data-id="equilibrar">Equilibrar</button>
+              <button data-act="modoRep" data-id="prop">Según objetivo</button>
+            </div>
+            <p class="nota" id="apModoNota" style="margin-top:8px"></p>
+          </div>
+          <div class="card" style="margin-top:14px">
+            <p class="tit"><span>Reparto</span><span class="chip neu" id="apTotal">0 €</span></p>
+            <div id="apLista"></div>
+            <div class="stack" id="apBarra"></div>
+            <p class="nota" id="apNota"></p>
+            <button class="btn primario" style="margin-top:14px" id="btnAnotar">Anotar aportación</button>
+          </div>
         </div>
         <div>
-          <div class="card">
+          <div class="card" id="apMetal"></div>
+          <div class="card" id="apDespues"></div>
+          <div class="card" id="apPlan">
             <p class="tit"><span>Aportación automática</span></p>
             <div class="fila"><span class="t">Crear cada mes una aportación pendiente</span><label class="sw"><input type="checkbox" id="planActivo"><i></i></label></div>
             <div class="g2" id="planCampos" style="margin-top:8px">
@@ -443,6 +492,10 @@ html.bloqueada .nov{visibility:hidden}
           </div>
         </div>
       </div>
+    </section>
+
+    <!-- ===== MOVIMIENTOS ===== -->
+    <section id="v-movs" class="vista oculto">
       <div class="seg" id="segMov">
         <button class="on" data-act="segMov" data-id="aport">Aportaciones</button>
         <button data-act="segMov" data-id="ops">Operaciones</button>
@@ -507,6 +560,7 @@ html.bloqueada .nov{visibility:hidden}
               <input id="syncClave" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="La que pusiste en SECRETO"></label>
             <div class="btns"><button class="btn" data-act="genClave">Generar clave</button><button class="btn primario" data-act="sync">Sincronizar</button></div>
             <p class="nota" id="syncEstado" style="margin-top:10px"></p>
+            <button class="btn sm" data-act="ultimoAviso" style="margin-top:8px">Ver el aviso de la última aportación</button>
             <p class="nota" style="margin-top:6px">Los ISIN se ponen en cada posición. El script no guarda nada: tus datos solo viven en este dispositivo.</p>
           </div>
           <div class="card" style="margin-top:14px">
@@ -600,6 +654,7 @@ html.bloqueada .nov{visibility:hidden}
     </div>
     <p class="nota" id="dNota"></p>
     <div class="btns"><button class="btn primario" data-act="detGuardar">Guardar</button><button class="btn" data-act="editarPos" id="dEditar">Editar posición</button></div>
+    <div class="btns" id="dTrasFila"><button class="btn" data-act="trasDesde">Ya no lo tengo: lo traspasé a otro fondo</button></div>
   </div>
   <div class="card">
     <p class="tit"><span>Simular una venta</span></p>
@@ -755,7 +810,7 @@ function vacio() {
     precios: { oro: 0, plata: 0, fecha: "" }, serieRatio: [], histMetal: { oro: [], plata: [] },
     registro: [], plan: { activo: false, dia: 2, importe: 0, ultimo: "" },
     ops: [], hechas: {}, iniciados: [], tpatas: [], ignorados: [],
-    serieTotal: [], meta: { importe: 0 }, fiscal: { otras: 0 }, novedades: [],
+    modoReparto: "equilibrar", serieTotal: [], meta: { importe: 0 }, fiscal: { otras: 0 }, novedades: [], tSinOrigen: [], vlDudas: [],
     sync: { url: "", clave: "", ultima: "" },
     proy: { aporte: 0, anios: 20, infl: 2, r: { rv: 7, rf: 3, metal: 4, otro: 5 } },
     modoEvo: "vl",
@@ -801,6 +856,7 @@ function sanear(raw) {
   d.oculto = r.oculto === true;
   d.banda = nro(r.banda, 5, 0, 50);
   d.usarRatio = r.usarRatio !== false;
+  d.modoReparto = r.modoReparto === "prop" ? "prop" : "equilibrar";
   const pr = esObj(r.precios) ? r.precios : {};
   d.precios = { oro: nro(pr.oro, 0, 0, 1e6), plata: nro(pr.plata, 0, 0, 1e6), fecha: RE_ISO.test(String(pr.fecha || "")) ? pr.fecha : "" };
   d.serieRatio = sanearSerie(r.serieRatio, 1500).map((p) => ({ fecha: p.fecha, v: p.v }));
@@ -864,8 +920,13 @@ function sanear(raw) {
     .filter((x, i, a) => i === 0 || a[i - 1].fecha !== x.fecha).slice(-2000);
   d.novedades = lista(r.novedades).filter(esObj).slice(-30).map((x) => ({
     t: ["a", "v", "t"].includes(x.t) ? x.t : "a", nombre: limpiaTxt(x.nombre, 90), color: colorOk(x.color), de: colorOk(x.de || x.color),
-    imp: nro(x.imp, 0, 0, 1e9), unid: nro(x.unid, 0, 0, 1e9), metal: x.metal === true, fecha: RE_FECHA.test(String(x.fecha)) ? x.fecha : "",
+    imp: nro(x.imp, 0, 0, 1e9), unid: nro(x.unid, 0, 0, 1e9), metal: x.metal === true, fecha: RE_FECHA.test(String(x.fecha)) ? x.fecha : "", man: x.man === true,
   }));
+  d.tSinOrigen = lista(r.tSinOrigen).filter((x) => esObj(x) && RE_ISIN.test(String(x.isin)) && RE_FECHA.test(String(x.fecha))).slice(-20).map((x) => ({
+    isin: x.isin, nombre: limpiaTxt(x.nombre, 80), isinOtro: RE_ISIN.test(String(x.isinOtro || "")) ? x.isinOtro : "", nombreOtro: limpiaTxt(x.nombreOtro, 80),
+    fecha: x.fecha, neto: nro(x.neto, 0, 0, 1e9), ign: x.ign === true }));
+  d.vlDudas = lista(r.vlDudas).filter((x) => esObj(x) && RE_PID.test(String(x.posId)) && RE_FECHA.test(String(x.fecha))).slice(-40).map((x) => ({
+    posId: x.posId, fecha: x.fecha, v: nro(x.v, 0, 0, 1e7), antes: nro(x.antes, 0, 0, 1e7), ign: x.ign === true }));
   d.meta = { importe: nro(esObj(r.meta) ? r.meta.importe : 0, 0, 0, 1e10) };
   d.fiscal = { otras: nro(esObj(r.fiscal) ? r.fiscal.otras : 0, 0, -1e9, 1e10) };
   d.iniciados = lista(r.iniciados).map((x) => String(x).toUpperCase()).filter((x) => RE_ISIN.test(x));
@@ -874,7 +935,7 @@ function sanear(raw) {
     url: /^https:\/\/script\.google\.com\/macros\/s\/[A-Za-z0-9_-]{10,200}\/exec$/.test(String(sy.url || "").trim()) ? String(sy.url).trim() : "",
     clave: /^[A-Za-z0-9_-]{0,100}$/.test(String(sy.clave || "")) ? String(sy.clave || "") : "",
     ultima: RE_ISO.test(String(sy.ultima || "")) ? sy.ultima : "",
-    repaso: sy.repaso === 3 ? 3 : 0,
+    repaso: sy.repaso === 3 ? 3 : 0, scriptV: Math.round(nro(sy.scriptV, 0, 0, 99)),
   };
   const py = esObj(r.proy) ? r.proy : {}, rr = esObj(py.r) ? py.r : {};
   d.proy = {
@@ -973,7 +1034,7 @@ function calcReparto(a) {
   const def = ps.map((p, i) => Math.max(0, w[i] * F - valorDe(p)));
   const sd = def.reduce((s, x) => s + x, 0);
   let rep;
-  if (sd <= 1e-9) rep = w.map((x) => a * x);
+  if (S.modoReparto === "prop" || sd <= 1e-9) rep = w.map((x) => a * x);         // «Según objetivo»: cada uno su %
   else if (sd <= a) { const sobra = a - sd; rep = def.map((x, i) => x + sobra * w[i]); }
   else rep = def.map((x) => (a * x) / sd);
   const out = {};
@@ -1043,6 +1104,7 @@ const ICO = {
   ojoNo: SV('<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path d="M3 21 21 3"/>', 20),
   x: SV('<path d="M18 6 6 18M6 6l12 12"/>', 20),
   mas: SV('<path d="M12 5v14M5 12h14"/>', 18),
+  aportar: SV('<circle cx="12" cy="12" r="9"/><path d="M12 7.5v9M7.5 12h9"/>'),
 };
 function pintarIconos() { document.querySelectorAll("[data-ico]").forEach((el) => { const k = el.dataset.ico; if (ICO[k]) el.innerHTML = ICO[k]; }); }
 
@@ -1087,30 +1149,31 @@ function donut(segs, centro, sub) {
 
 /* ---------- Navegación ---------- */
 let tab = "inicio";
-const TITULOS = { inicio: "", cartera: "Cartera", movs: "Movimientos", ajustes: "Ajustes" };
+const TITULOS = { inicio: "", cartera: "Cartera", aportar: "Aportar", movs: "Movimientos", ajustes: "Ajustes" };
 function irTab(t) {
   if (!(t in TITULOS)) return;
   tab = t;
-  ["inicio", "cartera", "movs", "ajustes"].forEach((x) => $("v-" + x).classList.toggle("oculto", x !== t));
+  Object.keys(TITULOS).forEach((x) => $("v-" + x).classList.toggle("oculto", x !== t));
   document.querySelectorAll(".navbtn").forEach((b) => b.classList.toggle("on", b.dataset.id === t));
   $("tituloTab").textContent = TITULOS[t];
   $("tituloTab").classList.toggle("oculto", !TITULOS[t]);          // en Inicio no hay título ni fecha
-  $("hoyTxt").classList.toggle("oculto", t === "inicio");
+  $("hoyTxt").classList.add("oculto");                              // sin fecha en ningún menú
   window.scrollTo(0, 0);
   pintar();
 }
 
 /* ---------- Avisos ---------- */
-let pendCerrado = false, copiaCerrada = false;
+let pendCerrado = false, copiaCerrada = false, sinIsinCerrado = false;
 const pendientes = () => S.registro.filter((a) => a.estado === "pendiente");
 function pintarAvisos() {
+  if ($("avisos").contains(document.activeElement) && document.activeElement.tagName === "SELECT") return;   // no cerrar el desplegable mientras eliges
   let h = "";
   const p = pendientes();
   if (p.length && !pendCerrado) {
     const tot = p.reduce((s, a) => s + a.total, 0);
     h += '<div class="aviso"><b>' + (p.length === 1 ? "Tienes una aportación sin confirmar" : "Tienes " + p.length + " aportaciones sin confirmar") + "</b>" +
       "<p>Desde el " + esc(fmtF(p.map((a) => a.fecha).sort()[0])) + " · " + eur(tot) + "</p>" +
-      '<div class="btns"><button class="btn primario" data-act="tab" data-id="movs">Revisar</button><button class="btn" data-act="cerrarPend">Ahora no</button></div></div>';
+      '<div class="btns"><button class="btn primario" data-act="tab" data-id="aportar">Revisar</button><button class="btn" data-act="cerrarPend">Ahora no</button></div></div>';
   }
   const ult = G.get("ultimaCopia", null), dias = ult ? Math.floor((Date.now() - new Date(ult).getTime()) / 864e5) : null;
   if (S.pos.length && !copiaCerrada && (dias === null || dias >= 30)) {
@@ -1123,6 +1186,37 @@ function pintarAvisos() {
       (S.tpatas.some((t) => t.posId === x.id && t.objMovido) ? ". Su objetivo ha pasado al fondo de destino." : ".") + " Si ya no la vas a usar, puedes eliminarla.</p>" +
       '<div class="btns"><button class="btn primario" data-act="borrarVacia" data-id="' + esc(x.id) + '">Eliminar</button><button class="btn" data-act="mantenerVacia" data-id="' + esc(x.id) + '">Mantener</button></div></div>';
   });
+  const sep = () => (h ? ' style="margin-top:12px"' : "");
+  // Script de Google sin actualizar
+  if (S.sync.url && S.sync.ultima && S.sync.scriptV && S.sync.scriptV < 4) {
+    h += '<div class="aviso"' + sep() + "><b>Actualiza el script de Google</b><p>El que tienes publicado es una versión antigua: no lee los correos de traspaso, por eso algún fondo puede aparecer con dinero que ya no tienes. " +
+      "Pega el código nuevo, pulsa Guardar y en Implementar → Gestionar implementaciones elige «Nueva versión». Al sincronizar, la app releerá tus correos y se corregirá sola.</p></div>";
+  }
+  // Traspasos desde un fondo que la app no reconoce
+  const grupos = {};
+  S.tSinOrigen.filter((x) => !x.ign && !posDeIsin(x.isin)).forEach((x) => { (grupos[x.isin] = grupos[x.isin] || []).push(x); });
+  Object.keys(grupos).forEach((isin) => {
+    const xs = grupos[isin], x = xs[0], opciones = S.pos.filter((p) => p.cat !== "metal");
+    h += '<div class="aviso"' + sep() + "><b>Traspaso detectado: " + esc(x.nombre || isin) + (x.nombreOtro ? " → " + esc(x.nombreOtro) : "") + "</b>" +
+      "<p>" + esc(fmtF(x.fecha)) + " · " + esc(eur(xs.reduce((s, y) => s + y.neto, 0))) + ". No tengo ninguna posición con el ISIN " + esc(isin) + ". ¿Cuál de las tuyas es?</p>" +
+      '<div class="unir" style="margin-top:10px"><select data-sel-origen="' + esc(isin) + '"><option value="">Elige la posición…</option>' +
+      opciones.map((p) => '<option value="' + esc(p.id) + '">' + esc(p.nombre) + (p.isin ? " · " + esc(p.isin) : " · sin ISIN") + "</option>").join("") + "</select></div>" +
+      '<div class="btns"><button class="btn primario" data-act="asignarOrigen" data-id="' + esc(isin) + '">Es esta</button><button class="btn" data-act="ignorarOrigen" data-id="' + esc(isin) + '">No la sigo en la app</button></div></div>';
+  });
+  // Precios de la web muy distintos del guardado
+  S.vlDudas.filter((x) => !x.ign).forEach((x) => {
+    const p = porId(x.posId); if (!p) return;
+    h += '<div class="aviso"' + sep() + "><b>Revisa el precio de " + esc(p.nombre) + "</b><p>La web dice " + esc(fmtVL(x.v)) + " el " + esc(fmtF(x.fecha)) + " y tenías " + esc(fmtVL(x.antes)) +
+      ". Si el tuyo estaba mal (por ejemplo, de otra clase del fondo), usa el de la web.</p>" +
+      '<div class="btns"><button class="btn primario" data-act="usarVL" data-id="' + esc(p.id) + '">Usar el de la web</button><button class="btn" data-act="ignorarVL" data-id="' + esc(p.id) + '">Ignorar</button></div></div>';
+  });
+  // Fondos sin ISIN: ni precio de la web ni correos
+  const sinIsin = S.pos.filter((p) => p.cat !== "metal" && !p.isin);
+  if (S.sync.url && sinIsin.length && !sinIsinCerrado) {
+    h += '<div class="aviso info"' + sep() + "><b>" + (sinIsin.length === 1 ? esc(sinIsin[0].nombre) + " no tiene ISIN" : sinIsin.length + " posiciones sin ISIN") + "</b><p>" +
+      (sinIsin.length > 1 ? esc(sinIsin.map((p) => p.nombre).join(", ")) + ": " : "") + "sin ISIN no puedo traer su precio de la web ni leer sus correos.</p>" +
+      '<div class="btns"><button class="btn primario" data-act="editarPos" data-id="' + esc(sinIsin[0].id) + '">Poner ISIN</button><button class="btn" data-act="sinIsinNo">Ahora no</button></div></div>';
+  }
   S.pos.filter((x) => x.revisar).forEach((x) => {
     h += '<div class="aviso info"' + (h ? ' style="margin-top:12px"' : "") + "><b>Fondo nuevo: " + esc(x.nombre) + "</b><p>Lo he añadido con el ISIN " + esc(x.isin) +
       " de tus correos. Elige su categoría y su objetivo, o únelo a una posición que ya tuvieras.</p>" +
@@ -1214,7 +1308,7 @@ function pintarInicio() {
     : '<p class="sub">Sin aportación automática.</p>';
   if (pend.length) hm += '<p style="margin-top:10px"><span class="chip warn">' + pend.length + " sin confirmar</span></p>";
   if (hechas.length) hm += '<p class="sub" style="margin-top:10px">Última: ' + esc(fmtF(hechas[0].fecha)) + " · " + esc(eur(hechas[0].total)) + "</p>";
-  hm += '<button class="btn primario" style="margin-top:16px" data-act="tab" data-id="movs">Aportar</button>';
+  hm += '<button class="btn primario" style="margin-top:16px" data-act="tab" data-id="aportar">Aportar</button>';
   $("cMes").innerHTML = hm;
 
   // Proyección
@@ -1244,7 +1338,7 @@ function pintarCartera() {
       h += '<button class="pc" data-act="abrirPos" data-id="' + esc(p.id) + '" style="--c:' + colorOk(p.color) + '"><div class="arriba">' +
         '<span class="av" style="background:' + colorOk(p.color) + '">' + esc(iniciales(p.nombre)) + "</span>" +
         '<span class="nm" style="flex:1;min-width:0"><b style="display:block;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + esc(p.nombre) + "</b>" +
-        '<small class="sub">' + esc(fmtU(p.unid)) + " " + esc(unidLbl(p).toLowerCase()) + (p.isin ? " · " + esc(p.isin) : "") + (sincronizada(p) ? " · Gmail" : "") + "</small></span>" +
+        '<small class="sub">' + esc(fmtU(p.unid)) + " " + esc(unidLbl(p).toLowerCase()) + (p.isin ? " · " + esc(p.isin) : p.cat !== "metal" ? " · sin ISIN, precio a mano" : "") + (sincronizada(p) ? " · Gmail" : "") + "</small></span>" +
         '<span class="vl" style="text-align:right"><b style="display:block;font-weight:800">' + esc(eur(v)) + "</b>" +
         (p.inv > 0 ? '<span class="chip ' + (g >= 0 ? "pos" : "neg") + '" style="margin-top:4px">' + esc(pct((g / p.inv) * 100, true)) + "</span>" : "") + "</span></div>" +
         (p.obj > 0 ? '<div class="barra"><i style="width:' + clamp(act, 0, 100).toFixed(1) + "%;background:" + colorOk(p.color) + '"></i><em style="left:' + clamp(obj, 0, 100).toFixed(1) + '%"></em></div>' +
@@ -1267,29 +1361,59 @@ function toast(t, err) {
 
 /* =================== MOVIMIENTOS =================== */
 let repManual = {}, aportandoId = null;
+const fmtUC = (u) => (u >= 100 ? fmtNum(u, 2) : u >= 1 ? fmtNum(u, 3) : fmtU(+u.toFixed(4)));
 function pintarAportar() {
   const a = num($("apImporte").value), R = calcReparto(a);
   $("repReset").classList.toggle("oculto", !Object.keys(repManual).length);
   const obj = aportandoId && S.registro.find((x) => x.id === aportandoId);
   $("apObjetivo").classList.toggle("oculto", !obj);
-  if (obj) $("apObjetivo").textContent = "Completando la aportación pendiente del " + fmtF(obj.fecha) + ".";
-  if (!S.pos.length) { $("apLista").innerHTML = '<p class="vacioTxt">Añade primero tus posiciones.</p>'; $("apBarra").innerHTML = ""; $("apNota").textContent = ""; return; }
-  const ps = S.pos.filter((p) => !(p.vaciada && !(p.unid > 0))).sort((x, y) => y.obj - x.obj);
-  $("apLista").innerHTML = ps.map((p) =>
-    '<div class="rep"><i class="dot" style="background:' + colorOk(p.color) + '"></i><span class="nm">' + esc(p.nombre) +
-    "<small>" + (sincronizada(p) ? "Se ajusta con el correo" : esc(catDe(p).n)) + "</small></span>" +
-    '<input inputmode="decimal" data-rep="' + esc(p.id) + '" placeholder="0" autocomplete="off"></div>').join("");
+  if (obj) $("apObjetivo").innerHTML = "Completando la aportación pendiente del " + esc(fmtF(obj.fecha)) + '. <button class="link" data-act="apCancelar">Cancelar</button>';
+  // Pendientes del plan automático
+  const pend = S.registro.filter((x) => x.estado === "pendiente" && x.id !== aportandoId).sort((x, y) => x.fecha.localeCompare(y.fecha));
+  $("apPend").innerHTML = pend.length ? '<div class="aviso">' + "<b>" + (pend.length === 1 ? "Tienes una aportación pendiente" : "Tienes " + pend.length + " aportaciones pendientes") + "</b>" +
+    pend.slice(0, 3).map((x) => '<div class="filaPend"><span>' + esc(fmtF(x.fecha)) + " · " + esc(eur(x.total)) + '</span><button class="btn sm" data-act="aportarReg" data-id="' + esc(x.id) + '">Aportar esta</button></div>').join("") + "</div>" : "";
+  // Importes rápidos
+  const rap = [...new Set([S.plan.importe > 0 ? S.plan.importe : 0, 100, 200, 300, 500, 1000].filter((x) => x > 0))].slice(0, 5);
+  $("apRapidos").innerHTML = rap.map((v) => '<button data-act="apRapido" data-id="' + v + '" class="' + (Math.abs(v - a) < 0.005 ? "on" : "") + '">' + esc(eurR(v).replace(",00", "")) + (v === S.plan.importe ? " · mi plan" : "") + "</button>").join("");
+  document.querySelectorAll("#segModoRep button").forEach((b) => b.classList.toggle("on", b.dataset.id === S.modoReparto));
+  $("apModoNota").textContent = S.modoReparto === "prop" ? "Cada posición recibe su % objetivo de lo que aportas, sin mirar cómo está ahora."
+    : "Primero llena lo que le falta a cada posición para su objetivo; lo que sobre, según su %. Así vuelves al equilibrio sin vender.";
+  if (!S.pos.length) { $("apLista").innerHTML = '<p class="vacioTxt">Añade primero tus posiciones.</p>'; $("apBarra").innerHTML = ""; $("apNota").textContent = ""; pintarMetalAporte(R, a); pintarDespues(); return; }
+  const T = total(), so = sumaObj(), F = T + (a > 0 ? a : 0);
+  const ps = S.pos.filter((p) => !(p.vaciada && !(p.unid > 0)));
+  let h = "";
+  CATS.forEach((c) => {
+    const grupo = ps.filter((p) => p.cat === c).sort((x, y) => y.obj - x.obj);
+    if (!grupo.length) return;
+    h += '<div class="repCat"><span>' + esc(CAT[c].n) + '</span><b data-cat="' + c + '"></b></div>';
+    h += grupo.map((p) => {
+      const meta = so > 0 ? (p.obj / so) * F : 0, falta = meta - valorDe(p);
+      const sub = sincronizada(p) ? "Se ajusta con el correo" : !(p.obj > 0) ? "Sin objetivo" : falta > 0.5 ? "Le faltan " + eur(falta, 0) + " para su objetivo" : "Por encima de su objetivo";
+      return '<div class="rep"><i class="dot" style="background:' + colorOk(p.color) + '"></i><span class="nm">' + esc(p.nombre) +
+        "<small>" + esc(sub) + ' <span class="apU" data-u="' + esc(p.id) + '"></span></small></span>' +
+        '<input inputmode="decimal" data-rep="' + esc(p.id) + '" placeholder="0" autocomplete="off" aria-label="Importe para ' + esc(p.nombre) + '"></div>';
+    }).join("");
+  });
+  $("apLista").innerHTML = h;
   document.querySelectorAll("[data-rep]").forEach((el) => {
     const id = el.dataset.rep;
     if (id in repManual) { el.value = repManual[id]; el.classList.add("tocado"); }
     else el.value = R && R.det[id] ? String(R.det[id].toFixed(2)).replace(".", ",") : "";
   });
   pintarTotalesAporte(R);
+  pintarMetalAporte(R, a);
 }
 function valoresAporte() { const v = {}; document.querySelectorAll("[data-rep]").forEach((el) => { const x = Math.max(0, num(el.value)); if (x > 0) v[el.dataset.rep] = Math.round(x * 100) / 100; }); return v; }
 function pintarTotalesAporte(R) {
   const v = valoresAporte(), tot = Object.values(v).reduce((s, x) => s + x, 0), a = num($("apImporte").value);
   $("apBarra").innerHTML = Object.keys(v).map((id) => { const p = porId(id); return p ? '<i style="width:' + ((v[id] / (tot || 1)) * 100).toFixed(2) + "%;background:" + colorOk(p.color) + '"></i>' : ""; }).join("");
+  $("apTotal").textContent = eur(tot);
+  // Subtotales por categoría y participaciones u onzas aproximadas
+  document.querySelectorAll("[data-cat]").forEach((el) => { const c = el.dataset.cat; el.textContent = eur(Object.keys(v).filter((id) => porId(id) && porId(id).cat === c).reduce((s, id) => s + v[id], 0)); });
+  document.querySelectorAll("[data-u]").forEach((el) => {
+    const p = porId(el.dataset.u), x = v[el.dataset.u] || 0, pr = p ? precioDe(p) : 0;
+    el.textContent = x > 0 && pr > 0 ? "· ≈ " + fmtUC(x / pr) + (p.cat === "metal" ? " oz" : " part.") : "";
+  });
   let t = "";
   if (a > 0 && !R && S.pos.length) t = "Pon un objetivo a tus posiciones para que la app reparta sola, o escribe los importes a mano.";
   else if (tot > 0) {
@@ -1299,6 +1423,57 @@ function pintarTotalesAporte(R) {
     t += ".";
   } else t = "Escribe cuánto aportas y la app lo reparte según tus objetivos. Puedes cambiar cualquier importe.";
   $("apNota").textContent = t;
+  pintarDespues();
+}
+/* Oro y plata: el ratio decide qué parte de lo que va a metales es plata */
+function pintarMetalAporte(R, a) {
+  const oros = S.pos.filter((p) => p.cat === "metal" && p.metal === "oro"), platas = S.pos.filter((p) => p.cat === "metal" && p.metal === "plata");
+  const hay = oros.length + platas.length > 0;
+  $("apMetal").classList.remove("oculto");
+  const r = ratio();
+  let h = '<p class="tit"><span>Oro y plata</span><button class="link" data-act="precios">Actualizar precios</button></p>';
+  if (!r) { $("apMetal").innerHTML = h + '<p class="vacioTxt">Pulsa «Actualizar precios» para traer el precio de mercado del oro y la plata.</p>'; return; }
+  if (!hay) {
+    // Sin posiciones marcadas como metal: se ven los precios y se ofrece marcar las que lo parezcan
+    const cand = S.pos.filter((p) => p.cat !== "metal" && /gold|\boro\b|silver|plata|physical/i.test(p.nombre));
+    $("apMetal").innerHTML = h + '<div class="stats"><div class="stat"><small>Oro</small><b>' + esc(eurR(S.precios.oro)) + '</b><span class="sub2">por onza</span></div>' +
+      '<div class="stat"><small>Plata</small><b>' + esc(eurR(S.precios.plata)) + '</b><span class="sub2">por onza</span></div>' +
+      '<div class="stat"><small>Ratio oro/plata</small><b>' + esc(fmtNum(r, 1)) + '</b><span class="sub2">' + esc(tramo(r)[0]) + "</span></div>" +
+      '<div class="stat"><small>Plata este mes</small><b>' + esc(fmtNum(repartoPlata(r), 0)) + ' %</b><span class="sub2">de lo que va a metales</span></div></div>' +
+      '<p class="nota" style="margin-top:12px">No tienes ninguna posición marcada como <b>Metal</b>, así que el oro y la plata no entran en el reparto.' +
+      (cand.length ? " Parece que estas lo son:" : " Márcalas en Ajustes → Posiciones → Categoría: Metal.") + "</p>" +
+      (cand.length ? '<div class="btns">' + cand.map((p) => '<button class="btn" data-act="hacerMetal" data-id="' + esc(p.id) + '">' + esc(p.nombre) + " → " + (/silver|plata/i.test(p.nombre) ? "plata" : "oro") + "</button>").join("") + "</div>" : "") +
+      '<p class="sub" style="margin-top:10px">' + (S.precios.fecha ? "Actualizado " + esc(hace(S.precios.fecha)) : "") + "</p>";
+    return;
+  }
+  const t = tramo(r), pp = repartoPlata(r), pos = clamp(((r - 40) / 55) * 100, 0, 100);
+  const v = valoresAporte(), amO = oros.reduce((s, p) => s + (v[p.id] || 0), 0), amP = platas.reduce((s, p) => s + (v[p.id] || 0), 0);
+  h += '<div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap"><span class="bigN">' + esc(fmtNum(r, 1)) + '</span><span class="chip neu">' + esc(t[0]) + "</span></div>" +
+    '<div class="gaugeW"><div class="gauge"><i style="width:18.2%;background:#FF8A65"></i><i style="width:36.4%;background:#5B8DEF"></i><i style="width:27.3%;background:#A78BFA"></i><i style="width:18.1%;background:#2ED39A"></i></div>' +
+    '<div class="aguja" style="left:' + pos.toFixed(1) + '%"></div></div><div class="marcas"><span>40</span><span>50</span><span>70</span><span>85</span><span>95</span></div>' +
+    '<p class="nota" style="margin-top:10px">' + esc(t[1]) + "</p>" +
+    '<p class="campo" style="margin:14px 0 0"><span>Este mes, lo que va a metales se reparte así</span></p>' +
+    '<div class="split"><div style="width:' + (100 - pp).toFixed(1) + '%;background:#F5C542">' + (100 - pp >= 28 ? "<b>Oro " + esc(fmtNum(100 - pp, 0)) + " %</b>" : "") + '</div><div style="width:' + pp.toFixed(1) + '%;background:#B8C4D6">' + (pp >= 28 ? "<b>Plata " + esc(fmtNum(pp, 0)) + " %</b>" : "") + "</div></div>" +
+    '<div class="splitLeg"><span><i style="background:#F5C542"></i>Oro ' + esc(fmtNum(100 - pp, 0)) + ' %</span><span><i style="background:#B8C4D6"></i>Plata ' + esc(fmtNum(pp, 0)) + " %</span></div>" +
+    (amO + amP > 0 ? '<div class="stats" style="margin-top:12px"><div class="stat"><small>Al oro</small><b>' + esc(eur(amO)) + "</b>" + (S.precios.oro > 0 ? '<span class="sub2">≈ ' + esc(fmtUC(amO / S.precios.oro)) + " oz</span>" : "") + "</div>" +
+      '<div class="stat"><small>A la plata</small><b>' + esc(eur(amP)) + "</b>" + (S.precios.plata > 0 ? '<span class="sub2">≈ ' + esc(fmtUC(amP / S.precios.plata)) + " oz</span>" : "") + "</div></div>" : "") +
+    '<div class="fila" style="margin-top:6px"><div><span class="t">Repartir por el ratio</span><p class="nota">Bajo 50 → 10 % plata · 50-70 → 25 % · de 70 a 85 sube hasta 70 % · sobre 85 → 70 %.</p></div>' +
+    '<label class="sw"><input type="checkbox" id="apRatio"' + (S.usarRatio ? " checked" : "") + "><i></i></label></div>" +
+    '<p class="sub">Oro ' + esc(eurR(S.precios.oro)) + "/oz · Plata " + esc(eurR(S.precios.plata)) + "/oz" + (S.precios.fecha ? " · " + esc(hace(S.precios.fecha)) : "") + "</p>";
+  $("apMetal").innerHTML = h;
+}
+/* Cómo queda la cartera después de esta aportación */
+function pintarDespues() {
+  const v = valoresAporte(), add = Object.values(v).reduce((s, x) => s + x, 0), T = total(), T2 = T + add, so = sumaObj();
+  const ps = S.pos.filter((p) => p.obj > 0 || valorDe(p) > 0);
+  if (!ps.length || T2 <= 0) { $("apDespues").innerHTML = '<p class="tit"><span>Cómo queda tu cartera</span></p><p class="vacioTxt">Aquí verás cómo cambia el peso de cada posición.</p>'; return; }
+  $("apDespues").innerHTML = '<p class="tit"><span>Cómo queda tu cartera</span>' + (add > 0 ? '<span class="chip pos">+' + esc(eur(add).replace(/^\+/, "")) + "</span>" : "") + "</p>" +
+    ps.sort((x, y) => y.obj - x.obj).map((p) => {
+      const antes = T > 0 ? (valorDe(p) / T) * 100 : 0, desp = ((valorDe(p) + (v[p.id] || 0)) / T2) * 100, ob = so > 0 ? (p.obj / so) * 100 : 0;
+      const dentro = !(p.obj > 0) || Math.abs(desp - ob) <= S.banda;
+      return '<div class="obj"><div class="cab"><b>' + esc(p.nombre) + "</b><span>" + esc(fmtNum(antes, 1)) + " % → <b class=\"" + (dentro ? "" : "warnT") + '">' + esc(fmtNum(desp, 1)) + " %</b>" + (p.obj > 0 ? " · obj " + esc(fmtNum(ob, 1)) + " %" : "") + "</span></div>" +
+        '<div class="barra" style="margin-top:0"><i style="width:' + clamp(desp, 0, 100).toFixed(1) + "%;background:" + colorOk(p.color) + '"></i>' + (p.obj > 0 ? '<em style="left:' + clamp(ob, 0, 100).toFixed(1) + '%"></em>' : "") + "</div></div>";
+    }).join("") + '<p class="nota" style="margin-top:6px">La raya marca el objetivo. En naranja, lo que seguiría fuera de tu banda de ± ' + esc(fmtNum(S.banda, 0)) + " puntos.</p>";
 }
 
 /* Toda aportación queda en el registro. Si hay una pendiente ese mes (o la elegida), se completa. */
@@ -1326,8 +1501,13 @@ function anotar() {
   });
   registrarAportacion(v, aportandoId);
   aportandoId = null; repManual = {}; $("apImporte").value = "";
+  ids.forEach((id) => {
+    const p = porId(id); if (!p || sincronizada(p)) return;
+    S.novedades.push({ t: "a", nombre: p.nombre, color: p.color, de: p.color, imp: v[id], unid: precioDe(p) > 0 ? v[id] / precioDe(p) : 0, metal: p.cat === "metal", fecha: hoy(), man: true });
+  });
   guardar(); pintar();
-  toast(esperan ? "Anotada. Lo de Gmail se ajustará al llegar el correo" : "Aportación anotada");
+  if (esperan) toast("Anotada. Lo de Gmail se ajustará al llegar el correo");
+  mostrarNovedades();
 }
 
 function pintarPlan() {
@@ -1435,6 +1615,7 @@ function abrirDetalle(id) {
   $("dPrecio").value = p.precio ? String(p.precio).replace(".", ",") : "";
   $("dInv").value = p.inv ? String(p.inv).replace(".", ",") : "";
   $("dInicio").value = p.inicio || "";
+  $("dTrasFila").classList.toggle("oculto", p.cat === "metal" || !(p.unid > 0));
   $("sVenta").value = "";
   $("dUnidLbl").textContent = unidLbl(p);
   $("dPrecioFila").classList.toggle("oculto", p.cat === "metal");
@@ -1828,7 +2009,7 @@ function pintarTraspasos() {
   });
   if (!$("tFecha").value) $("tFecha").value = hoy();
   const o = porId($("tOrigen").value);
-  $("tDisp").textContent = o ? "Disponible en " + o.nombre + ": " + eur(valorDe(o)) : "";
+  $("tDisp").textContent = o ? "Disponible en " + o.nombre + ": " + eur(valorDe(o)) + ". ¿El fondo de destino no aparece? Añádelo antes en Ajustes → Posiciones con su ISIN." : "";
 
   const grupos = [...new Set(S.tpatas.filter((x) => x.grupo).map((x) => x.grupo))].map(infoGrupo).sort((a, b) => b.fecha.localeCompare(a.fecha));
   const sueltas = S.tpatas.filter((x) => !x.grupo).sort((a, b) => b.fecha.localeCompare(a.fecha));
@@ -2234,24 +2415,41 @@ function pintarMeta() {
    Al detectar aportaciones, ventas o traspasos nuevos en tus correos sale una tarjeta
    con lo que ha llegado. Se queda guardada hasta que la ves (aunque la app estuviera bloqueada). */
 const CHECK = '<svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="24"/><path d="M15 27l7 7 15-16"/></svg>';
-function mostrarNovedades() {
-  if (!S.novedades.length || document.documentElement.classList.contains("bloqueada") || !$("novedad").classList.contains("oculto")) return;
-  const N = S.novedades, a = N.filter((x) => x.t === "a"), v = N.filter((x) => x.t === "v"), t = N.filter((x) => x.t === "t");
+const MESES_L = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+const nombreMes = (ym) => MESES_L[Number(ym.slice(5, 7)) - 1] || "";
+function mostrarNovedades(lista) {
+  const N = lista || S.novedades;
+  if (!N.length || document.documentElement.classList.contains("bloqueada") || !$("novedad").classList.contains("oculto")) return;
+  novMostrada = lista ? "prueba" : "real";
+  const a = N.filter((x) => x.t === "a"), v = N.filter((x) => x.t === "v"), t = N.filter((x) => x.t === "t");
+  // Una aportación mensual llega en varios correos (uno por fondo): se cuentan por meses, no por correos
+  const meses = [...new Set(a.map((x) => x.fecha.slice(0, 7)))].sort();
+  const deMeses = meses.map(nombreMes).join(" y ");
+  const manual = a.length && a.every((x) => x.man);
   let tit;
-  if (a.length && !v.length && !t.length) tit = a.length === 1 ? "¡Aportación detectada!" : a.length + " aportaciones detectadas";
+  if (a.length && !v.length && !t.length) tit = manual ? "¡Aportación anotada!" : meses.length === 1 ? "¡Aportación de " + deMeses + " detectada!" : "Aportaciones de " + deMeses + " detectadas";
   else if (t.length && !a.length && !v.length) tit = t.length === 1 ? "¡Traspaso detectado!" : t.length + " traspasos detectados";
   else if (v.length && !a.length && !t.length) tit = v.length === 1 ? "Venta detectada" : v.length + " ventas detectadas";
   else tit = "Novedades en tu cartera";
   const totA = a.reduce((s, x) => s + x.imp, 0);
   $("novTit").textContent = tit;
   $("novTot").textContent = a.length ? "+" + eur(totA).replace(/^\+/, "") : t.length ? eur(t.reduce((s, x) => s + x.imp, 0)) : "−" + eur(v.reduce((s, x) => s + x.imp, 0));
-  $("novSub").textContent = a.length ? "Ya está sumado a tu cartera" + (S.registro.some((r) => r.estado === "hecha" && r.fecha.slice(0, 7) === hoy().slice(0, 7)) ? " y la aportación del mes queda hecha." : ".")
-    : t.length ? "El coste fiscal ha pasado al fondo de destino." : "Ya está restado de tu cartera.";
-  $("novLista").innerHTML = N.slice().sort((x, y) => y.fecha.localeCompare(x.fecha)).map((x) =>
+  let sub;
+  if (a.length) {
+    sub = "Ya está sumada a tu cartera.";
+    const mes = meses[meses.length - 1], reg = S.registro.find((r) => r.fecha.slice(0, 7) === mes && r.estado === "hecha");
+    if (!manual && reg) {
+      const llegado = Object.values(reg.det).reduce((s, x) => s + x, 0);
+      if (S.plan.activo && S.plan.importe > 0 && llegado < S.plan.importe * 0.98) sub = "Llevas " + eur(llegado) + " de tus " + eur(S.plan.importe) + " de " + nombreMes(mes) + ": el resto llegará cuando se ejecuten los demás fondos.";
+      else sub = "Sumada a tu cartera. La aportación de " + nombreMes(mes) + " queda hecha.";
+    }
+  } else sub = t.length ? "El coste fiscal ha pasado al fondo de destino." : "Ya está restado de tu cartera.";
+  $("novSub").textContent = sub;
+  $("novLista").innerHTML = N.slice().sort((x, y) => y.fecha.localeCompare(x.fecha) || y.imp - x.imp).map((x) =>
     '<div class="novItem"><span class="av" style="background:' + colorOk(x.t === "t" ? x.de : x.color) + '">' + (x.t === "t" ? "⇄" : esc(iniciales(x.nombre))) + "</span>" +
     '<span class="nm"><b class="ell">' + esc(x.t === "v" ? "Venta de " + x.nombre : x.nombre) + '</b><small class="sub">' + esc(fmtF(x.fecha)) +
-    (x.unid > 0 ? " · " + fmtU(x.unid) + (x.metal ? " oz" : " part.") : "") + "</small></span>" +
-    '<b class="' + (x.t === "v" ? "neg" : x.t === "a" ? "pos" : "") + '">' + (x.t === "a" ? "+" : x.t === "v" ? "−" : "") + esc(eur(x.imp)) + "</b></div>").join("");
+    (x.unid > 0 ? " · " + fmtUC(x.unid) + (x.metal ? " oz" : " part.") : "") + "</small></span>" +
+    '<b class="' + (x.t === "v" ? "neg" : x.t === "a" ? "pos" : "") + '">' + (x.t === "a" ? "+" : x.t === "v" ? "−" : "") + esc(eur(x.imp).replace(/^\+/, "")) + "</b></div>").join("");
   const colores = [S.acento, "#38BDF8", "#2ED39A", "#F5C542", "#FF8A65", "#F472B6"];
   $("novConf").innerHTML = Array.from({ length: 26 }, (_, i) => '<i style="left:' + (4 + Math.random() * 92).toFixed(1) + "%;background:" + colorOk(colores[i % colores.length]) +
     ";animation-delay:" + (Math.random() * 0.5).toFixed(2) + "s;animation-duration:" + (1.4 + Math.random() * 1.2).toFixed(2) + "s;transform:rotate(" + Math.round(Math.random() * 360) + 'deg)"></i>').join("");
@@ -2259,10 +2457,21 @@ function mostrarNovedades() {
   $("novedad").classList.remove("oculto");
   document.body.classList.add("conHoja");
 }
+let novMostrada = "";
 function cerrarNovedades() {
   $("novedad").classList.add("oculto");
   if ($("velo").classList.contains("oculto")) document.body.classList.remove("conHoja");
-  S.novedades = []; guardar(); pintar();
+  if (novMostrada !== "prueba") { S.novedades = []; guardar(); }
+  novMostrada = ""; pintar();
+  if (S.novedades.length) setTimeout(mostrarNovedades, 300);   // si llegó algo mientras mirabas la prueba
+}
+/* Vuelve a enseñar el aviso de la última aportación que llegó por correo (para verlo cuando quieras) */
+function ultimoAviso() {
+  const regs = S.registro.filter((r) => r.estado === "hecha" && (r.ejec || []).length).sort((x, y) => y.fecha.localeCompare(x.fecha));
+  const r = regs[0];
+  if (!r) { toast("Todavía no ha llegado ninguna aportación por correo", true); return; }
+  const it = r.ejec.map((e) => { const p = porId(e.posId); return p ? { t: "a", nombre: p.nombre, color: p.color, de: p.color, imp: e.neto, unid: e.onz || e.part, metal: p.cat === "metal", fecha: e.fecha } : null; }).filter(Boolean);
+  if (it.length) mostrarNovedades(it);
 }
 
 
@@ -2401,9 +2610,19 @@ function mezclarVL(vl) {
     if (!p || p.cat === "metal") return;
     lista(vl[isin]).forEach((x) => {
       if (!esObj(x) || !RE_FECHA.test(String(x.fecha)) || !(Number(x.v) > 0)) return;
-      if (p.hist.some((h) => h.fecha === x.fecha)) return;
+      const mismo = p.hist.find((h) => h.fecha === x.fecha);
+      if (mismo && Math.abs(mismo.v - Number(x.v)) < 1e-6) return;
       const prev = p.hist.filter((h) => h.fecha < x.fecha).pop();
-      if (prev && prev.v > 0 && Math.abs(Number(x.v) / prev.v - 1) > 0.25) { raros.push(p.nombre); return; }
+      const ref = prev && prev.v > 0 ? prev.v : p.precio > 0 && (!p.precioFecha || p.precioFecha <= x.fecha) ? p.precio : 0;
+      if (ref > 0 && Math.abs(Number(x.v) / ref - 1) > 0.25) {
+        // Puede que el precio guardado esté mal: te lo pregunto en Inicio en vez de ignorarlo sin más
+        if (!S.vlDudas.some((d) => d.posId === p.id && d.fecha === x.fecha && d.ign)) {
+          S.vlDudas = S.vlDudas.filter((d) => d.posId !== p.id).concat([{ posId: p.id, fecha: x.fecha, v: Number(x.v), antes: ref, ign: false }]);
+          raros.push(p.nombre);
+        }
+        return;
+      }
+      S.vlDudas = S.vlDudas.filter((d) => d.posId !== p.id || d.ign);
       addHist(p, x.fecha, Number(x.v), x.fecha >= hoy().slice(0, 8) + "01" ? p.unid : undefined);
       nuevos++;
       if (!p.precioFecha || x.fecha >= p.precioFecha) { p.precio = Number(x.v); p.precioFecha = x.fecha; }
@@ -2424,11 +2643,13 @@ async function sincronizar(manual, forzar) {
     const isins = S.pos.filter((p) => p.isin && p.cat !== "metal").map((p) => p.isin);
     const ult = S.ops.map((o) => o.fecha).sort().pop();
     // La primera vez tras activar los traspasos se repasa todo el correo (lo ya aplicado no se repite)
-    const desde = ult && S.sync.repaso === 3 ? new Date(new Date(ult).getTime() - 15 * 864e5).toISOString().slice(0, 10) : "";
+    // Con un script anterior a la versión 4 (sin traspasos) o recién actualizado, se relee todo el correo
+    const desde = ult && S.sync.repaso === 3 && S.sync.scriptV >= 4 ? new Date(new Date(ult).getTime() - 15 * 864e5).toISOString().slice(0, 10) : "";
     const u = s.url + "?k=" + encodeURIComponent(s.clave || "") + (isins.length ? "&isins=" + encodeURIComponent(isins.join(",")) : "") + (desde ? "&desde=" + desde : "");
     const r = await fetch(u, { cache: "no-store" });
     const d = await r.json();
     if (!d || !d.ok) throw new Error(d && d.error === "clave incorrecta" ? "la clave no coincide con la del script" : (d && d.error) || "respuesta no válida");
+    S.sync.scriptV = Math.round(clamp(Number(d.version) || 1, 1, 99));
     const recibidas = lista(d.ops), ops = recibidas.map(validarOp).filter(Boolean), descartadas = recibidas.length - ops.length;
     const previas = ops.filter((o) => !(o.ref in S.hechas) && posDeIsin(o.isin));
     const isinsNuevos = [...new Set(previas.map((o) => o.isin))].filter((i) => !S.iniciados.includes(i));
@@ -2457,7 +2678,8 @@ async function sincronizar(manual, forzar) {
     // Novedades para el aviso visual (solo lo reciente; lo antiguo se aplica sin avisar)
     const hace30 = new Date(Date.now() - 30 * 864e5).toISOString().slice(0, 10);
     nuevas.forEach((o) => {
-      if (S.hechas[o.ref] !== "aplicada" || o.traspaso || o.fecha < hace30) return;
+      // No avisa de lo importado por primera vez (fondos recién añadidos o ISIN nuevos): solo de lo que llega nuevo
+      if (S.hechas[o.ref] !== "aplicada" || o.traspaso || o.fecha < hace30 || altas[o.isin] || isinsNuevos.includes(o.isin)) return;
       const p = posDeIsin(o.isin); if (!p) return;
       const metal = p.cat === "metal", pr = metal ? num(S.precios[p.metal]) : 0;
       S.novedades.push({ t: signoOp(o) > 0 ? "a" : "v", nombre: p.nombre, color: p.color, de: p.color, imp: o.neto,
@@ -2474,24 +2696,44 @@ async function sincronizar(manual, forzar) {
     S.sync.ultima = new Date().toISOString();
     S.sync.repaso = 3;
     guardar();
-    let t = apl || hist ? apl + " operaciones aplicadas" + (hist ? " y " + hist + " registradas" : "") + "." : "Todo al día.";
+    let t = S.sync.scriptV < 4 ? "⚠️ El script publicado en Google es una versión antigua y no lee los traspasos: actualízalo y publica una nueva versión. " : "";
+    t += apl || hist ? apl + " operaciones aplicadas" + (hist ? " y " + hist + " registradas" : "") + "." : "Todo al día.";
     if (grupos.length) t += " Traspaso" + (grupos.length > 1 ? "s" : "") + ": " + grupos.map((g) => g.texto).join("; ") + ".";
     const altasN = Object.keys(altas).map((i) => posDeIsin(i)).filter(Boolean).map((p) => p.nombre);
     if (altasN.length) t += " Añadido a tu cartera: " + altasN.join(", ") + " (elige su categoría en el aviso de Inicio).";
     const sueltas = S.tpatas.filter((x) => !x.grupo && x.dir < 0).length;
     if (sueltas) t += " " + sueltas + " traspaso" + (sueltas > 1 ? "s" : "") + " esperando la entrada en el fondo de destino.";
-    const hace45 = new Date(Date.now() - 45 * 864e5).toISOString().slice(0, 10);
-    const sinOrigen = [...new Set(ops.filter((o) => o.traspaso && signoOp(o) < 0 && !posDeIsin(o.isin) && !(o.ref in S.hechas) && o.fecha >= hace45).map((o) => (o.nombre || "un fondo") + " (" + o.isin + ")"))];
-    if (sinOrigen.length) t += " Hay un traspaso desde " + sinOrigen.join(", ") + ", que no tienes en la app con ese ISIN: si es una de tus posiciones, ponle ese ISIN en Ajustes → Posiciones y vuelve a sincronizar.";
+    ops.filter((o) => o.traspaso && signoOp(o) < 0 && !posDeIsin(o.isin) && !(o.ref in S.hechas) && !S.ignorados.includes(o.isin)).forEach((o) => {
+      if (S.tSinOrigen.some((x) => x.isin === o.isin && x.fecha === o.fecha)) return;
+      S.tSinOrigen.push({ isin: o.isin, nombre: nombreBonito(o.nombre), isinOtro: o.isinOtro || "", nombreOtro: nombreBonito(o.nombreOtro || ""), fecha: o.fecha, neto: o.neto, ign: false });
+    });
+    S.tSinOrigen = S.tSinOrigen.filter((x) => !posDeIsin(x.isin)).slice(-20);
+    const sinOrigen = S.tSinOrigen.filter((x) => !x.ign);
+    if (sinOrigen.length) t += " " + (sinOrigen.length === 1 ? "Hay un traspaso" : "Hay " + sinOrigen.length + " traspasos") + " desde un fondo que no está en la app con su ISIN: elige cuál es en el aviso de Inicio.";
+    const rech = lista(d.rechazados).filter(esObj);
+    if (rech.length) {
+      const doms = [...new Set(rech.map((x) => limpiaTxt(x.dominio, 60)).filter(Boolean))];
+      t += " " + rech.length + " correo" + (rech.length > 1 ? "s" : "") + " de operaciones no aceptado" + (rech.length > 1 ? "s" : "") +
+        (doms.length ? " (remitente: " + doms.join(", ") + ")" : "") + " por seguridad: si son tuyos, dímelo y lo añadimos al script.";
+    }
     const noLeidos = lista(d.noLeidos).length;
     if (noLeidos) t += " " + noLeidos + " correo" + (noLeidos > 1 ? "s" : "") + " de traspaso que no he sabido leer: anótalo a mano en Movimientos → Traspasos.";
     if (vl.nuevos) t += " " + vl.nuevos + " valores liquidativos nuevos.";
-    if (vl.raros.length) t += " Ignorado un precio anómalo de " + vl.raros.join(", ") + ".";
+    if (vl.raros.length) t += " El precio de la web de " + vl.raros.join(", ") + " es muy distinto del que tenías: revísalo en Inicio.";
     if (descartadas) t += " " + descartadas + " correos descartados por formato no válido.";
     if (pendientesSinPrecio) t += " " + pendientesSinPrecio + " de metales esperan al precio del oro o la plata.";
     const res = d.precios && esObj(d.precios.resultado) ? d.precios.resultado : {};
-    const errs = Object.keys(res).filter((i) => String(res[i]).indexOf("ERROR") === 0).map((i) => { const p = posDeIsin(i); return p ? p.nombre : i; });
-    if (errs.length) t += " No se pudo leer el precio de " + errs.join(", ") + ".";
+    const okP = [], errP = [];
+    Object.keys(res).forEach((i) => {
+      const p = posDeIsin(i); if (!p) return;
+      const x = lista(esObj(d.vl) ? d.vl[i] : null)[0];
+      if (String(res[i]).indexOf("ERROR") === 0) errP.push(p.nombre + " (" + limpiaTxt(String(res[i]).slice(7), 60) + ")");
+      else if (esObj(x) && Number(x.v) > 0) okP.push(p.nombre + " " + fmtVL(Number(x.v)) + (RE_FECHA.test(String(x.fecha)) ? " del " + fmtCorta(x.fecha) : ""));
+    });
+    if (okP.length) t += " Precios de la web: " + okP.join(" · ") + ".";
+    if (errP.length) t += " No se pudo leer el precio de " + errP.join(", ") + ".";
+    const sinIsin = S.pos.filter((p) => p.cat !== "metal" && !p.isin).map((p) => p.nombre);
+    if (sinIsin.length) t += " Sin ISIN (su precio no se actualiza): " + sinIsin.join(", ") + ".";
     $("syncEstado").textContent = t;
     if (S.novedades.length) { /* lo cuenta el aviso visual */ }
     else if (grupos.length) toast(grupos.length === 1 ? "Traspaso detectado: " + grupos[0].texto : grupos.length + " traspasos detectados");
@@ -2697,7 +2939,8 @@ function pintar() {
   pintarAvisos();
   if (tab === "inicio") pintarInicio();
   if (tab === "cartera") { pintarCartera(); pintarFiscal(); }
-  if (tab === "movs") { if (!document.activeElement || !document.activeElement.dataset || !document.activeElement.dataset.rep) pintarAportar(); pintarPlan(); pintarRegistro(); }
+  if (tab === "aportar") { if (!document.activeElement || !document.activeElement.dataset || !document.activeElement.dataset.rep) pintarAportar(); pintarPlan(); }
+  if (tab === "movs") pintarRegistro();
   if (tab === "ajustes") pintarAjustes();
   if (detId && !$("shDetalle").classList.contains("oculto")) pintarDetalle();
 }
@@ -2768,7 +3011,7 @@ const ACC = {
   aportarReg: (id) => {
     const a = S.registro.find((x) => x.id === id); if (!a) return;
     aportandoId = id; repManual = {}; $("apImporte").value = String(a.total).replace(".", ",");
-    movAbierto = null; pintar(); window.scrollTo(0, 0); $("apImporte").focus();
+    movAbierto = null; irTab("aportar"); $("apImporte").focus();
   },
   yaHecha: (id) => { const a = S.registro.find((x) => x.id === id); if (a) { a.estado = "hecha"; guardar(); pintar(); toast("Registrada sin tocar tus posiciones"); } },
   omitir: (id) => { const a = S.registro.find((x) => x.id === id); if (a) { a.estado = "omitida"; guardar(); pintar(); } },
@@ -2800,6 +3043,47 @@ const ACC = {
   csv: () => { try { descargar(construirCsv(), "mi-cartera-" + hoy() + ".csv", "text/csv;charset=utf-8"); toast("Archivo para Excel descargado"); } catch (e) { toast("No se ha podido generar.", true); } },
   restaurar: () => restaurarTexto($("impDatos").value),
   novOk: () => cerrarNovedades(),
+  ultimoAviso: () => ultimoAviso(),
+  hacerMetal: (id) => {
+    const p = porId(id); if (!p) return;
+    const m = /silver|plata/i.test(p.nombre) ? "plata" : "oro", v0 = valorDe(p);
+    if (!confirm("¿Marcar «" + p.nombre + "» como " + m + "? Se medirá en onzas con el precio del " + m + ", conservando su valor actual (" + eurR(v0) + ").")) return;
+    p.cat = "metal"; p.metal = m; p.revisar = false;
+    if (v0 > 0 && num(S.precios[m]) > 0) p.unid = +(v0 / S.precios[m]).toFixed(6);
+    guardar(); pintar(); toast(p.nombre + " ahora cuenta como " + m);
+  },
+  modoRep: (id) => { S.modoReparto = id === "prop" ? "prop" : "equilibrar"; repManual = {}; guardar(); pintarAportar(); },
+  apRapido: (id) => { const v = num(id); if (v > 0) { $("apImporte").value = String(v).replace(".", ","); repManual = {}; pintarAportar(); } },
+  apCancelar: () => { aportandoId = null; $("apImporte").value = ""; repManual = {}; pintarAportar(); },
+  trasDesde: () => {
+    const p = porId(detId); if (!p) return;
+    cerrarHojas(); irTab("movs"); ACC.segMov("tras");
+    $("tOrigen").value = p.id; $("tDestino").value = ""; $("tImporte").value = String(valorDe(p).toFixed(2)).replace(".", ","); $("tFecha").value = "";
+    pintarTraspasos(); $("tMsg").textContent = "Elige el fondo de destino y la fecha en que hiciste el traspaso.";
+    setTimeout(() => $("cTras").scrollIntoView({ behavior: "smooth", block: "start" }), 50);
+  },
+  asignarOrigen: (isin) => {
+    const sel = document.querySelector('[data-sel-origen="' + isin + '"]'), p = sel && porId(sel.value);
+    if (!p) { toast("Elige primero la posición", true); return; }
+    if (p.isin && p.isin !== isin && !confirm("«" + p.nombre + "» tiene el ISIN " + p.isin + ". ¿Cambiarlo por " + isin + "?")) return;
+    if (p.isin) S.iniciados = S.iniciados.filter((x) => x !== p.isin);
+    S.ignorados = S.ignorados.filter((x) => x !== isin);
+    S.iniciados = S.iniciados.filter((x) => x !== isin);           // te preguntará si sus operaciones ya estaban al día
+    p.isin = isin; S.sync.repaso = 0;                              // vuelve a leer todo el correo
+    S.tSinOrigen = S.tSinOrigen.filter((x) => x.isin !== isin);
+    guardar(); pintar(); toast("ISIN puesto en " + p.nombre + ". Leyendo tus correos…");
+    sincronizar(true, true);
+  },
+  ignorarOrigen: (isin) => { S.tSinOrigen.forEach((x) => { if (x.isin === isin) x.ign = true; }); guardar(); pintar(); },
+  usarVL: (posId) => {
+    const dd = S.vlDudas.find((x) => x.posId === posId && !x.ign), p = porId(posId); if (!dd || !p) return;
+    addHist(p, dd.fecha, dd.v, p.unid);
+    p.precio = dd.v; p.precioFecha = dd.fecha;
+    S.vlDudas = S.vlDudas.filter((x) => x.posId !== posId);
+    guardar(); pintar(); toast("Precio de " + p.nombre + " actualizado");
+  },
+  ignorarVL: (posId) => { S.vlDudas.forEach((x) => { if (x.posId === posId) x.ign = true; }); guardar(); pintar(); },
+  sinIsinNo: () => { sinIsinCerrado = true; pintarAvisos(); },
   novVer: () => { const t = S.novedades.length && S.novedades.every((x) => x.t === "t"); cerrarNovedades(); irTab("movs"); ACC.segMov(t ? "tras" : "aport"); },
   borrarTodo: () => {
     if (!confirm("¿Borrar TODOS los datos de la app en este dispositivo? No se puede deshacer.")) return;
@@ -2848,6 +3132,7 @@ $("cArchivo").addEventListener("change", async () => {
 $("tOrigen").addEventListener("change", () => { $("tMsg").textContent = ""; pintarTraspasos(); });
 $("tDestino").addEventListener("change", () => { $("tMsg").textContent = ""; });
 $("ajBanda").addEventListener("input", () => { S.banda = clamp(num($("ajBanda").value), 0, 50); guardar(); });
+$("v-aportar").addEventListener("change", (ev) => { if (ev.target && ev.target.id === "apRatio") { S.usarRatio = ev.target.checked; repManual = {}; guardar(); pintarAportar(); } });
 $("ajRatio").addEventListener("change", () => { S.usarRatio = $("ajRatio").checked; guardar(); pintar(); });
 $("syncUrl").addEventListener("input", () => {
   const v = $("syncUrl").value.trim();
