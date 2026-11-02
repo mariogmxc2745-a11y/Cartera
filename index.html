@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-Jx27QrDun64DqPVyQsmeIZjadFXtZw/93WMV07PoJ0Y=' 'sha256-gmmdb6pqzUqeBgLLgqQ4OVROgqdWvzoZ+p5zgpFt0Zs='; style-src 'unsafe-inline'; font-src data:; img-src 'self' data:; connect-src https://api.gold-api.com https://api.frankfurter.dev https://script.google.com https://script.googleusercontent.com; base-uri 'none'; form-action 'none'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-Jx27QrDun64DqPVyQsmeIZjadFXtZw/93WMV07PoJ0Y=' 'sha256-QolYDftCkjyW75VP6zJOcXTzye+6asFvgPbr3CvygCM='; style-src 'unsafe-inline'; font-src data:; img-src 'self' data:; connect-src https://api.gold-api.com https://api.frankfurter.dev https://script.google.com https://script.googleusercontent.com; base-uri 'none'; form-action 'none'; object-src 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -556,8 +556,12 @@ body::before{content:"";position:fixed;left:0;right:0;top:0;height:env(safe-area
             <p class="tit"><span>Conexión con Gmail</span></p>
             <label class="campo"><span>Dirección del script</span>
               <input id="syncUrl" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="https://script.google.com/macros/s/…/exec"></label>
-            <label class="campo"><span>Clave</span>
-              <input id="syncClave" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="La que pusiste en SECRETO"></label>
+            <label class="campo" for="syncClave"><span>Clave</span></label>
+            <div class="unir campo">
+              <input id="syncClave" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="La que pusiste en SECRETO">
+              <button class="btn sm" data-act="verClave" id="btnVerClave" type="button">Ver</button>
+              <button class="btn sm" data-act="copiarClave" type="button">Copiar</button>
+            </div>
             <div class="btns"><button class="btn" data-act="genClave">Generar clave</button><button class="btn primario" data-act="sync">Sincronizar</button></div>
             <p class="nota" id="syncEstado" style="margin-top:10px"></p>
             <button class="btn sm" data-act="ultimoAviso" style="margin-top:8px">Ver el aviso de la última aportación</button>
@@ -3044,6 +3048,17 @@ const ACC = {
   restaurar: () => restaurarTexto($("impDatos").value),
   novOk: () => cerrarNovedades(),
   ultimoAviso: () => ultimoAviso(),
+  verClave: () => {
+    const el = $("syncClave"), ver = el.type === "password";
+    el.type = ver ? "text" : "password"; $("btnVerClave").textContent = ver ? "Ocultar" : "Ver";
+    if (ver) setTimeout(() => { if (el.type === "text") { el.type = "password"; $("btnVerClave").textContent = "Ver"; } }, 30000);   // se vuelve a ocultar sola
+  },
+  copiarClave: async () => {
+    const c = $("syncClave").value || S.sync.clave;
+    if (!c) { toast("Todavía no hay clave. Pulsa «Generar clave»", true); return; }
+    try { await navigator.clipboard.writeText(c); toast("Clave copiada. Pégala en SECRETO dentro del script"); }
+    catch (e) { $("syncClave").type = "text"; $("btnVerClave").textContent = "Ocultar"; $("syncClave").select(); toast("No se ha podido copiar sola: mantén pulsado el texto y elige Copiar", true); }
+  },
   hacerMetal: (id) => {
     const p = porId(id); if (!p) return;
     const m = /silver|plata/i.test(p.nombre) ? "plata" : "oro", v0 = valorDe(p);
